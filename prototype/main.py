@@ -50,8 +50,6 @@ def transformImage ((width, height), originalImage, transformationMatrix):
   Hinv = linalg.inv(transformationMatrix)
   transformedImage = array(Image.new (originalImage.mode, (width,height)))
 
-  #print (Hinv)
-
   originalArray = array(originalImage)
   for y in range(0, height):
     print ("Row " + str(y) + "/" + str(height))
@@ -63,27 +61,19 @@ def transformImage ((width, height), originalImage, transformationMatrix):
         float(pointOriginal[1][0]/pointOriginal[2][0]),
         1]
 
-      #print (t)
-
       #print ("Point transformed: " +str(pointTransformed) + ", Point original: " + str (t) + '\n==============\n')
       
       xOrig = t[0]
       yOrig = t[1]
       
-      if (True or xOrig >= 0 and xOrig < originalArray[0].size/3 and yOrig >= 0 and yOrig < originalArray.size/originalArray[0].size/3):
-        #print ("********** " + str(originalArray[0].size)+ " ************ " + str(originalArray.size) +" ********")
-        transformedImage[y][x] = originalArray[yOrig][xOrig]
-      else:
-        print ("Ignoring: transformed: " + str(pointTransformed) + ", original: " + str(t))
-        transformedImage[y][x] = [0, 0, 0] 
+      transformedImage[y][x] = originalArray[yOrig][xOrig]
 
   return transformedImage
-      
 
 if __name__ == '__main__':
-  print ("hello")
-  transformedWidth = 600
-  transformedHeight = 800 
+  print ("warming up")
+  transformedWidth = 300
+  transformedHeight = 400 
   transformedPoints = [(0,0), (transformedWidth,0), (transformedWidth,transformedHeight), (0,transformedHeight)]
   originalImage = Image.open('sample.jpg')
   originalPoints = showPointsSelection(array(originalImage))
@@ -92,9 +82,6 @@ if __name__ == '__main__':
 
   hMatrix = calculateHMatrix (originalPoints, transformedPoints)
   
-  #print ('H as matrix: ')
-  #print (hMatrix)
-
   transformedImage = transformImage ((transformedWidth, transformedHeight), originalImage, hMatrix)
   print ("Displaying image")
   imshow (transformedImage)
