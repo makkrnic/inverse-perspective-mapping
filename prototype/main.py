@@ -1,5 +1,6 @@
 #!/usr/bin/env python2
 
+import sys
 from PIL import Image
 from pylab import *
 import matplotlib
@@ -52,7 +53,7 @@ def transformImage ((width, height), originalImage, transformationMatrix):
 
   originalArray = array(originalImage)
   for y in range(0, height):
-    print ("Row " + str(y) + "/" + str(height))
+    print ("Progress %.2lf %%" % (float(y)/float(height-1) * 100))
     for x in range (0, width):
       pointTransformed = np.matrix([[x], [y], [1]])
       pointOriginal = Hinv * pointTransformed
@@ -71,11 +72,27 @@ def transformImage ((width, height), originalImage, transformationMatrix):
   return transformedImage
 
 if __name__ == '__main__':
-  print ("warming up")
-  transformedWidth = 300
-  transformedHeight = 400 
+  if len(sys.argv) < 3 or len (sys.argv) == 4 or len (sys.argv) > 5:
+    sys.stderr.write ("Usage: " + str(sys.argv[0]) + " input_file output_file [output_width output_height]\n")
+    sys.stderr.write ("Dimensions are in pixels with default values 500x500\n")
+    sys.exit (-1)
+
+  inputFile = sys.argv[1]
+  outputFile = sys.argv[2]
+
+  if len(sys.argv) == 5:
+    transformedWidth = int(sys.argv[3])
+    transformedHeight = int(sys.argv[4])
+  else:
+    transformedWidth  = 500
+    transformedHeight = 500
+    
+  
+  sys.stderr.write ("Using: Input file: " + inputFile + "\nOutput file: " + outputFile + "\nResolution: " + str(transformedWidth) + "x" + str(transformedHeight) + "\n")
+
+
   transformedPoints = [(0,0), (transformedWidth,0), (transformedWidth,transformedHeight), (0,transformedHeight)]
-  originalImage = Image.open('sample.jpg')
+  originalImage = Image.open(inputFile)
   originalPoints = showPointsSelection(array(originalImage))
   
   #originalPoints = [(0,0), (transformedWidth,0), (transformedWidth,transformedHeight), (0,transformedHeight)]
@@ -83,6 +100,8 @@ if __name__ == '__main__':
   hMatrix = calculateHMatrix (originalPoints, transformedPoints)
   
   transformedImage = transformImage ((transformedWidth, transformedHeight), originalImage, hMatrix)
-  print ("Displaying image")
-  imshow (transformedImage)
-  ginput (3)
+  Image.fromarray(transformedImage).save (outputFile)
+
+  #print ("Displaying image")
+  #imshow (transformedImage)
+  #ginput (3)
