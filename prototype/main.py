@@ -5,6 +5,7 @@ from PIL import Image
 from pylab import *
 import matplotlib
 from numpy import *
+import time
 
 def showPointsSelection(image):
   imshow(image)
@@ -100,20 +101,22 @@ def transformImage ((width, height), originalImage, transformationMatrix, enable
   return transformedImage
 
 if __name__ == '__main__':
+  timeStart = time.clock()
+
   if len(sys.argv) < 3 or len (sys.argv) == 4 or len (sys.argv) > 6:
-    sys.stderr.write ("Usage: " + str(sys.argv[0]) + " <input_file> <output_file> [<output_width> <output_height>]\n")
-    sys.stderr.write ("Dimensions are in pixels with default values 500x500\n")
+    sys.stderr.write ("Usage: " + str(sys.argv[0]) + " <input_file> <output_file> <output_width> <output_height> [--no-interpolation]\n")
+    sys.stderr.write ("\tDimensions are in pixels.\n\t-no-interpolation disables interpolation.\n")
     sys.exit (-1)
 
   inputFile = sys.argv[1]
   outputFile = sys.argv[2]
+  transformedWidth = int(sys.argv[3])
+  transformedHeight = int(sys.argv[4])
 
-  if len(sys.argv) == 5:
-    transformedWidth = int(sys.argv[3])
-    transformedHeight = int(sys.argv[4])
+  if len(sys.argv) == 6:
+    enableInterpolation = False
   else:
-    transformedWidth  = 500
-    transformedHeight = 500
+    enableInterpolation = True
     
   
   sys.stderr.write ("Using: Input file: " + inputFile + "\nOutput file: " + outputFile + "\nResolution: " + str(transformedWidth) + "x" + str(transformedHeight) + "\n")
@@ -125,11 +128,20 @@ if __name__ == '__main__':
   
   #originalPoints = [(0,0), (transformedWidth,0), (transformedWidth,transformedHeight), (0,transformedHeight)]
 
+  timeStartMatrixCalculation = time.clock()
   hMatrix = calculateHMatrix (originalPoints, transformedPoints)
+  timeEndMatrixCalculation = time.clock()
   
-  transformedImage = transformImage ((transformedWidth, transformedHeight), originalImage, hMatrix, True)
+  timeStartTransformation = time.clock()
+  transformedImage = transformImage ((transformedWidth, transformedHeight), originalImage, hMatrix, enableInterpolation)
+  timeEndTransformation = time.clock()
   Image.fromarray(transformedImage).save (outputFile)
 
+  timeEnd = time.clock()
   #print ("Displaying image")
   #imshow (transformedImage)
   #ginput (3)
+  
+  print ("CPU time for transformation matrix calculation: %f" % (timeEndMatrixCalculation - timeStartMatrixCalculation))
+  print ("CPU time for transformation: %f." % (timeEndTransformation - timeStartTransformation))
+  print ("Total CPU time: %f.\n" % (timeEnd - timeStart))
