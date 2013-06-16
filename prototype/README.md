@@ -16,4 +16,4 @@ Required libraries:
 Usage
 -----
 
-  <pre>$ ./transform.py <input_file> <output_file> <output_width> <output_height> [--no-interpolation]</pre>
+  <pre>$ ./transform.py input_file output_file output_width output_height [--no-interpolation]</pre>
