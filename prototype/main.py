@@ -46,10 +46,11 @@ def calculateHMatrix (originalPoints, transformedPoints):
 
   return H
 
-def transformImage ((width, height), originalImage, transformationMatrix):
+def transformImage ((width, height), originalImage, transformationMatrix, enableInterpolation = True):
 
   Hinv = linalg.inv(transformationMatrix)
   transformedImage = array(Image.new (originalImage.mode, (width,height)))
+  (originalWidth, originalHeight) = originalImage.size
 
   originalArray = array(originalImage)
   for y in range(0, height):
@@ -67,13 +68,40 @@ def transformImage ((width, height), originalImage, transformationMatrix):
       xOrig = t[0]
       yOrig = t[1]
       
-      transformedImage[y][x] = originalArray[yOrig][xOrig]
+
+      if (enableInterpolation
+        and (xOrig != int(xOrig) or yOrig != int(yOrig))
+        and xOrig - 1 >= 0 and xOrig + 1 <= originalWidth
+        and yOrig - 1 >= 0 and yOrig + 1 <= originalHeight):
+
+        #print ("Interpolating (%f, %f)" % (xOrig, yOrig))
+
+        xOrigInt = int (xOrig)
+        yOrigInt = int (yOrig)
+
+        dx = xOrig - xOrigInt
+        dy = yOrig - yOrigInt
+
+        #print ("dx: %f; dy: %f" % (dx, dy))
+
+        point = (originalArray[yOrigInt][xOrigInt] * (1-dx)*(1-dy)
+              + originalArray[yOrigInt][xOrigInt+1]*dx*(1-dy)
+              + originalArray[yOrigInt+1][xOrigInt]*(1-dx)*dy
+              + originalArray[yOrigInt+1][xOrigInt+1]*dx*dy)
+        #print (point)
+
+        transformedImage[y][x] = point
+
+        #sys.stdin.readline()
+      else:
+        #print ("Not interpolating (%f, %f)" % (xOrig, yOrig))
+        transformedImage[y][x] = originalArray[int(yOrig)][int(xOrig)]
 
   return transformedImage
 
 if __name__ == '__main__':
-  if len(sys.argv) < 3 or len (sys.argv) == 4 or len (sys.argv) > 5:
-    sys.stderr.write ("Usage: " + str(sys.argv[0]) + " input_file output_file [output_width output_height]\n")
+  if len(sys.argv) < 3 or len (sys.argv) == 4 or len (sys.argv) > 6:
+    sys.stderr.write ("Usage: " + str(sys.argv[0]) + " <input_file> <output_file> [<output_width> <output_height>]\n")
     sys.stderr.write ("Dimensions are in pixels with default values 500x500\n")
     sys.exit (-1)
 
@@ -99,7 +127,7 @@ if __name__ == '__main__':
 
   hMatrix = calculateHMatrix (originalPoints, transformedPoints)
   
-  transformedImage = transformImage ((transformedWidth, transformedHeight), originalImage, hMatrix)
+  transformedImage = transformImage ((transformedWidth, transformedHeight), originalImage, hMatrix, True)
   Image.fromarray(transformedImage).save (outputFile)
 
   #print ("Displaying image")
