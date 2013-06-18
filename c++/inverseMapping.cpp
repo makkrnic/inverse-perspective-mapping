@@ -40,11 +40,15 @@ int main (int argc, char *argv[]) {
 
   vector<CvPoint> selectedPoints;// = new vector();
   int pointsClicked;
+  CvScalar pointColor = cvScalar (0, 0, 255);
   for (pointsClicked = 0; pointsClicked < 4; pointsClicked++) {
     selectedPoint.x = -1;
     while (selectedPoint.x == -1) {
       waitKey(1);
     }
+
+    circle (originalImage, selectedPoint, 5, pointColor, CV_FILLED);
+    imshow ("Points selection", originalImage);
     
     selectedPoints.push_back (selectedPoint);
 
@@ -55,6 +59,7 @@ int main (int argc, char *argv[]) {
     CvPoint p = selectedPoints[i];
     cout << "(" << p.x << ", " << p.y << ")" << "\n";
   }
+
 
   
   //waitKey (0);
