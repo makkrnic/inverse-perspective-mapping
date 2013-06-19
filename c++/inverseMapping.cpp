@@ -79,7 +79,7 @@ void transformImage (const Mat& originalImage, Mat& transformedImage, const Mat&
       
 
       //cout << "Point: " << originalPoint << "\n";
-      unsigned char originalPointComponents = originalImage.at<unsigned char>(floor(originalPoint.y), floor(originalPoint.x));
+      Vec3b  originalPointComponents = originalImage.at<Vec3b>(floor(originalPoint.y), floor(originalPoint.x));
       //char b = originalPointComponents >> 16;
       //char g = originalPointComponents >> 8;
       //char r = originalPointComponents;
@@ -87,7 +87,7 @@ void transformImage (const Mat& originalImage, Mat& transformedImage, const Mat&
       //cout << "B: " << hex << b << "G: " << hex << g << "R: " << hex << r << "\n";
       //cout << hex << originalPointComponents << "\n";
 
-      transformedImage.at<unsigned char>(y, x) = originalPointComponents;
+      transformedImage.at<Vec3b>(y, x) = originalPointComponents;
 
     }
   }
@@ -110,7 +110,7 @@ int main (int argc, char *argv[]) {
 
   int outputWidth   = atoi (argv[3]);
   int outputHeight  = atoi (argv[4]);
-  Mat originalImage = imread (inputImageName, CV_LOAD_IMAGE_GRAYSCALE);
+  Mat originalImage = imread (inputImageName, CV_LOAD_IMAGE_COLOR);
   //Mat *transformedImage = new Mat (outputHeight, outputWidth, originalImage.type());
 
   vector<Point2f> transformedPoints;
@@ -132,7 +132,8 @@ int main (int argc, char *argv[]) {
   CvPoint selectedPoint;
   cvSetMouseCallback ("Points selection", mouseHandler, &selectedPoint);
 
-  imshow ("Points selection", originalImage);
+  Mat originalImageCopy = originalImage.clone();
+  imshow ("Points selection", originalImageCopy);
 
   vector<Point2f> selectedPoints;// = new vector();
   int pointsClicked;
@@ -143,8 +144,8 @@ int main (int argc, char *argv[]) {
       waitKey(10);
     }
 
-    circle (originalImage, selectedPoint, 5, pointColor, CV_FILLED);
-    imshow ("Points selection", originalImage);
+    circle (originalImageCopy, selectedPoint, 5, pointColor, CV_FILLED);
+    imshow ("Points selection", originalImageCopy);
     
     selectedPoints.push_back (selectedPoint);
 
