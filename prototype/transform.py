@@ -64,7 +64,7 @@ def transformImage ((width, height), originalImage, transformationMatrix, enable
         float(pointOriginal[1][0]/pointOriginal[2][0]),
         1]
 
-      #print ("Point transformed: " +str(pointTransformed) + ", Point original: " + str (t) + '\n==============\n')
+      print ("Point transformed: " +str(pointTransformed) + ", Point original: " + str (t) + '\n==============\n')
       
       xOrig = t[0]
       yOrig = t[1]

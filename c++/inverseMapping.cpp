@@ -12,65 +12,74 @@ void mouseHandler (int event, int x, int y, int flags, void *param) {
   }
 }
 
-Mat *calculateTransformationMatrix (const vector<CvPoint>& originalPoints, const vector<CvPoint>& transformedPoints, bool interpolation = true) {
+Mat calculateTransformationMatrix (const vector<Point2f>& originalPoints, const vector<Point2f>& transformedPoints, bool interpolation = true) {
+
+  cout << "Original points: " << originalPoints << "\n";
+  cout << "Transformed points: " << transformedPoints << "\n";
   
   // in Ax = 0
-  Matx<double, 8, 9> A;
+  //Matx<float, 8, 9> A;
+  Mat A (8, 9, CV_32F);
   for (int i = 0; i < 4; i++) {
-    ((Mat)A).at<double>(2*i, 0) = 0;
-    ((Mat)A).at<double>(2*i, 1) = 0;
-    ((Mat)A).at<double>(2*i, 2) = 0;
-    ((Mat)A).at<double>(2*i, 3) = -originalPoints[i].x;
-    ((Mat)A).at<double>(2*i, 4) = -originalPoints[i].y;
-    ((Mat)A).at<double>(2*i, 5) = -1;
-    ((Mat)A).at<double>(2*i, 6) = transformedPoints[i].y * originalPoints[i].x;
-    ((Mat)A).at<double>(2*i, 7) = transformedPoints[i].y * originalPoints[i].y;
-    ((Mat)A).at<double>(2*i, 8) = transformedPoints[i].y;
+    cout << "A: " << A << "\n";
+    ((Mat)A).at<float>(2*i, 0) = 0;
+    ((Mat)A).at<float>(2*i, 1) = 0;
+    ((Mat)A).at<float>(2*i, 2) = 0;
+    ((Mat)A).at<float>(2*i, 3) = -originalPoints[i].x;
+    ((Mat)A).at<float>(2*i, 4) = -originalPoints[i].y;
+    ((Mat)A).at<float>(2*i, 5) = -1;
+    ((Mat)A).at<float>(2*i, 6) = transformedPoints[i].y * originalPoints[i].x;
+    ((Mat)A).at<float>(2*i, 7) = transformedPoints[i].y * originalPoints[i].y;
+    ((Mat)A).at<float>(2*i, 8) = transformedPoints[i].y;
     
-    ((Mat)A).at<double>(2*i+1, 0) = originalPoints[i].x;
-    ((Mat)A).at<double>(2*i+1, 1) = originalPoints[i].y;
-    ((Mat)A).at<double>(2*i+1, 2) = 1;
-    ((Mat)A).at<double>(2*i+1, 3) = 0;
-    ((Mat)A).at<double>(2*i+1, 4) = 0;
-    ((Mat)A).at<double>(2*i+1, 5) = 0;
-    ((Mat)A).at<double>(2*i+1, 6) = -transformedPoints[i].x * originalPoints[i].x;
-    ((Mat)A).at<double>(2*i+1, 7) = -transformedPoints[i].x * originalPoints[i].y;
-    ((Mat)A).at<double>(2*i+1, 8) = -transformedPoints[i].x;
+    ((Mat)A).at<float>(2*i+1, 0) = originalPoints[i].x;
+    ((Mat)A).at<float>(2*i+1, 1) = originalPoints[i].y;
+    ((Mat)A).at<float>(2*i+1, 2) = 1;
+    ((Mat)A).at<float>(2*i+1, 3) = 0;
+    ((Mat)A).at<float>(2*i+1, 4) = 0;
+    ((Mat)A).at<float>(2*i+1, 5) = 0;
+    ((Mat)A).at<float>(2*i+1, 6) = -transformedPoints[i].x * originalPoints[i].x;
+    ((Mat)A).at<float>(2*i+1, 7) = -transformedPoints[i].x * originalPoints[i].y;
+    ((Mat)A).at<float>(2*i+1, 8) = -transformedPoints[i].x;
   }
 
+  cout << "A: " << A << "\n";
   SVD svd = SVD((Mat)A, SVD::FULL_UV);
   Mat *transformationMatrix = new Mat(3, 3, CV_32F);;
+  cout << "SVD.vt: " << svd.vt << "\n";
 
   for (int i = 0; i < 9; i++) {
-    cout << (svd.vt).at<double>(i, svd.vt.size().width -1) << "\n";
-    transformationMatrix->at<float>(i) = (svd.vt).at<double>(i, svd.vt.size().width -1);
+    cout << (svd.vt).at<float>(8, i) << "\n";
+    transformationMatrix->at<float>(i) = (svd.vt).at<float>(8, i);
   }
 
+  cout << "Transformation matrix: " << *transformationMatrix << "\n";
   
-  return transformationMatrix;
+  *transformationMatrix = transformationMatrix->inv();
+  return *transformationMatrix;
 }
 
 Mat *transformImage (const Mat& originalImage, int width, int height, const Mat& transformationMatrix, bool enableInterpolation = true) {
   
   Mat *transformedImage = new Mat (height, width, originalImage.type());
-  Mat transformationMatrixInv = transformationMatrix.inv();
+  Mat transformationMatrixInv = transformationMatrix;
 
   for (int y = 0; y < height; y++) {
     //cerr << "Progress: " << (float)((float)y/(float)height * 100) << "\n";
     for (int x = 0; x < width; x++) {
-      //Mat pointTransformed (3, 1, transformationMatrix.type());
-      //pointTransformed.at<float>(0)= x;
-      //pointTransformed.at<float>(1)= y;
-      //pointTransformed.at<float>(2)= 1;
-      Matx<float, 3, 1> pointTransformed (x, y, 1);
+      Mat pointTransformed (3, 1, transformationMatrixInv.type());
+      pointTransformed.at<float>(0)= x;
+      pointTransformed.at<float>(1)= y;
+      pointTransformed.at<float>(2)= 1;
+      //Matx<CV_32FC2, 3, 1> pointTransformed (x, y, 1);
       Mat pointOriginal = transformationMatrixInv * (Mat)pointTransformed;
 
-      double t[2] = { 
+      float t[2] = { 
         ((Mat)pointOriginal).at<float>(0)/((Mat)pointOriginal).at<float>(2),
         ((Mat)pointOriginal).at<float>(1)/((Mat)pointOriginal).at<float>(2)
       };
 
-      cout << "(t1, t2): " << t[0] << t[1] << "\n";
+      cout << "(t1, t2): (" << t[0] << ", "<< t[1] << ")\n";
 
 
       transformedImage->at<float>(y, x) = originalImage.at<float>((int)t[1], (int)t[0]);
@@ -96,11 +105,11 @@ int main (int argc, char *argv[]) {
   Mat originalImage = imread (inputImageName, CV_LOAD_IMAGE_COLOR);
   //Mat *transformedImage = new Mat (outputHeight, outputWidth, originalImage.type());
 
-  vector<CvPoint> transformedPoints;
-  transformedPoints.push_back(cvPoint(0, 0));
-  transformedPoints.push_back(cvPoint(outputWidth, 0));
-  transformedPoints.push_back(cvPoint(outputWidth, outputHeight));
-  transformedPoints.push_back(cvPoint(0, outputHeight));
+  vector<Point2f> transformedPoints;
+  transformedPoints.push_back(Point2f(0, 0));
+  transformedPoints.push_back(Point2f(outputWidth, 0));
+  transformedPoints.push_back(Point2f(outputWidth, outputHeight));
+  transformedPoints.push_back(Point2f(0, outputHeight));
 
 
 
@@ -117,35 +126,44 @@ int main (int argc, char *argv[]) {
 
   imshow ("Points selection", originalImage);
 
-  vector<CvPoint> selectedPoints;// = new vector();
-  int pointsClicked;
-  CvScalar pointColor = cvScalar (0, 0, 255);
-  for (pointsClicked = 0; pointsClicked < 4; pointsClicked++) {
-    selectedPoint.x = -1;
-    while (selectedPoint.x == -1) {
-      waitKey(10);
-    }
+  vector<Point2f> selectedPoints;// = new vector();
+//  int pointsClicked;
+//  CvScalar pointColor = cvScalar (0, 0, 255);
+//  for (pointsClicked = 0; pointsClicked < 4; pointsClicked++) {
+//    selectedPoint.x = -1;
+//    while (selectedPoint.x == -1) {
+//      waitKey(10);
+//    }
+//
+//    circle (originalImage, selectedPoint, 5, pointColor, CV_FILLED);
+//    imshow ("Points selection", originalImage);
+//    
+//    //selectedPoints.push_back (selectedPoint);
+//
+//  }
 
-    circle (originalImage, selectedPoint, 5, pointColor, CV_FILLED);
-    imshow ("Points selection", originalImage);
-    
-    selectedPoints.push_back (selectedPoint);
-
-  }
+  selectedPoints.push_back (cvPoint(63.226562499999886, 450.328125));
+  selectedPoints.push_back (cvPoint(484.49218749999966, 450.328125));
+  selectedPoints.push_back (cvPoint(525.14062499999966, 808.7734375));
+  selectedPoints.push_back (cvPoint(140.82812499999989, 849.421875));
 
   cout << "Points: " << "\n";
   for (int i = 0; i < 4; i++) {
-    CvPoint p = selectedPoints[i];
+    Point2f p = selectedPoints[i];
     cout << "(" << p.x << ", " << p.y << ")" << "\n";
   }
 
-  Mat *transformationMatrix = calculateTransformationMatrix (selectedPoints, transformedPoints);
-  Mat *transformedImage = transformImage (originalImage, outputWidth, outputHeight, *transformationMatrix);
+  Mat transformationMatrixCustom = calculateTransformationMatrix (selectedPoints, transformedPoints);
+  //Mat transformationMatrix = getPerspectiveTransform(selectedPoints,transformedPoints);
+
+  //cout << "Transformation matrix (builtin): " << transformationMatrix << "\n";
+  cout << "Transformation matrix (custom): " << transformationMatrixCustom << "\n";
+  Mat *transformedImage = transformImage (originalImage, outputWidth, outputHeight, transformationMatrixCustom);
 
   //namedWindow ("Result", CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
   //imshow ("Result", *transformedImage);
 
-  waitKey(0);
+  //waitKey(0);
   
   return 0;
 }
