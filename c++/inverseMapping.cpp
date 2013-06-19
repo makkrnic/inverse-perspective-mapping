@@ -60,16 +60,15 @@ void transformImage (const Mat& originalImage, Mat& transformedImage, const Mat&
   
   Mat transformationMatrixInv = transformationMatrix;
   CvSize transformedSize = transformedImage.size();
-  //cout << "Size: " << transformedSize << :"\n";
+  CvSize originalSize = originalImage.size();
 
   for (int y = 0; y <transformedSize.height; y++) {
-    cerr << "Progress: " << (float)((float)y/(float)transformedSize.height* 100) << "\n";
+    cerr << "Progress: " << (float)((float)y/((float)transformedSize.height - 1) * 100) << " %\n";
     for (int x = 0; x < transformedSize.width; x++) {
       Mat pointTransformed (3, 1, transformationMatrixInv.type());
       pointTransformed.at<float>(0)= x;
       pointTransformed.at<float>(1)= y;
       pointTransformed.at<float>(2)= 1;
-      //Matx<CV_32FC2, 3, 1> pointTransformed (x, y, 1);
       Mat pointOriginal = transformationMatrixInv * (Mat)pointTransformed;
 
       Point2f originalPoint ( 
@@ -77,18 +76,28 @@ void transformImage (const Mat& originalImage, Mat& transformedImage, const Mat&
         pointOriginal.at<float>(1)/pointOriginal.at<float>(2)
       );
       
+      if (enableInterpolation
+          && (originalPoint.x != (int)originalPoint.x || originalPoint.y != (int)originalPoint.y)
+          && originalPoint.x - 1 >= 0 && originalPoint.x < originalSize.width
+          && originalPoint.y - 1 >= 0 && originalPoint.y < originalSize.height
+          ) {
+        
+        int xOrigInt = (int)originalPoint.x;
+        int yOrigInt = (int)originalPoint.y;
 
-      //cout << "Point: " << originalPoint << "\n";
-      Vec3b  originalPointComponents = originalImage.at<Vec3b>(floor(originalPoint.y), floor(originalPoint.x));
-      //char b = originalPointComponents >> 16;
-      //char g = originalPointComponents >> 8;
-      //char r = originalPointComponents;
+        float dx = originalPoint.x - xOrigInt;
+        float dy = originalPoint.y - yOrigInt;
 
-      //cout << "B: " << hex << b << "G: " << hex << g << "R: " << hex << r << "\n";
-      //cout << hex << originalPointComponents << "\n";
+        Vec3b point = originalImage.at<Vec3b>(yOrigInt, xOrigInt) * (1 - dx) * (1 - dy)
+                    + originalImage.at<Vec3b>(yOrigInt, xOrigInt + 1) * dx * (1 - dy)
+                    + originalImage.at<Vec3b>(yOrigInt + 1, xOrigInt) * (1 - dx) * dy
+                    + originalImage.at<Vec3b>(yOrigInt + 1, xOrigInt + 1) * dx * dy;
 
-      transformedImage.at<Vec3b>(y, x) = originalPointComponents;
-
+        transformedImage.at<Vec3b>(y, x) = point;
+      }
+      else {
+        transformedImage.at<Vec3b>(y, x) = originalImage.at<Vec3b>(floor(originalPoint.y), floor(originalPoint.x));
+      }
     }
   }
 
@@ -111,6 +120,7 @@ int main (int argc, char *argv[]) {
   int outputWidth   = atoi (argv[3]);
   int outputHeight  = atoi (argv[4]);
   Mat originalImage = imread (inputImageName, CV_LOAD_IMAGE_COLOR);
+  char *outputImageName = argv[2];
   //Mat *transformedImage = new Mat (outputHeight, outputWidth, originalImage.type());
 
   vector<Point2f> transformedPoints;
@@ -118,6 +128,7 @@ int main (int argc, char *argv[]) {
   transformedPoints.push_back(Point2f(outputWidth, 0));
   transformedPoints.push_back(Point2f(outputWidth, outputHeight));
   transformedPoints.push_back(Point2f(0, outputHeight));
+  bool enableInterpolation = argc > 5;
 
 
 
@@ -150,12 +161,7 @@ int main (int argc, char *argv[]) {
     selectedPoints.push_back (selectedPoint);
 
   }
-
-  //selectedPoints.push_back (cvPoint(63.226562499999886, 450.328125));
-  //selectedPoints.push_back (cvPoint(484.49218749999966, 450.328125));
-  //selectedPoints.push_back (cvPoint(525.14062499999966, 808.7734375));
-  //selectedPoints.push_back (cvPoint(140.82812499999989, 849.421875));
-
+  
   cout << "Points: " << "\n";
   for (int i = 0; i < 4; i++) {
     Point2f p = selectedPoints[i];
@@ -165,16 +171,17 @@ int main (int argc, char *argv[]) {
   Mat transformationMatrixCustom = calculateTransformationMatrix (selectedPoints, transformedPoints);
 
   Mat transformedImage (outputHeight, outputWidth, originalImage.type());
-  transformImage (originalImage, transformedImage, transformationMatrixCustom);
-  //cout << "Original image type: " << originalImage.type() << "\n";
-  //cout << "Transformed image type: "<< transformedImage.type() << "\n";
-
-  //cout << transformedImage << "\n";
-  //destroyAllWindows();
+  transformImage (originalImage, transformedImage, transformationMatrixCustom, enableInterpolation);
+  
   namedWindow ("newimage", CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
   imshow ("newimage", transformedImage);
 
-  imwrite ("output.jpg", transformedImage);
+  try {
+    imwrite (outputImageName, transformedImage);
+  }
+  catch (Exception e) {
+    cerr << "Error saving image" << "\n";
+  }
 
   while (waitKey(0) != 0x10001B);
   
