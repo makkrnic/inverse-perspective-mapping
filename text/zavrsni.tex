@@ -1,16 +1,19 @@
-\documentclass[times, utf8, zavrsni]{fer}
+\documentclass[times, utf8, zavrsni, numeric]{fer}
 \usepackage{booktabs}
+\usepackage{listings}
+\usepackage{enumitem, hyperref}
+
 
 \begin{document}
 
 % TODO: Navedite broj rada.
-\thesisnumber{000}
+\thesisnumber{3135}
 
 % TODO: Navedite naslov rada.
-\title{Naslov}
+\title{Inverzna perspektivna transformacija slike ravninskog objekta}
 
 % TODO: Navedite vaše ime i prezime.
-\author{Arthur Dent}
+\author{Mak Krnic}
 
 \maketitle
 
@@ -22,17 +25,17 @@
 
 \tableofcontents
 
-\chapter{Uvod}
-Uvod rada. Nakon uvoda dolaze poglavlja u kojima se obrađuje tema.
+\input{chapters/uvod.tex}
+\input{chapters/preslikavanje.tex}
 
-\chapter{Projekcijsko ravninsko preslikavanje}
-Projekcijsko ravninsko preslikavanje
+\input{chapters/programskaPodrska.tex}
+\input{chapters/implementacija.tex}
+\input{chapters/rezultati.tex}
+\input{chapters/zakljucak.tex}
 
-\chapter{Zaključak}
-Zaključak.
-
-\bibliography{literatura}
+%\bibliography{literatura}
 \bibliographystyle{fer}
+\bibliography{literatura}
 
 \begin{sazetak}
 Sažetak na hrvatskom jeziku.
