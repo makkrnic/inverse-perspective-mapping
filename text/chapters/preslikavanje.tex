@@ -2,24 +2,240 @@
 
 \section{Prikaz točaka u ravnini homogenom notacijom}
 
-Svaka točka u ravnini u pravokutnom koordinatnom sustavu jednoznačno je određena uređenim parom koordinata $(x, y)$ te je stoga uobičajeno ravninu poistovjetiti s $\mathbb{R}^2$. Zbog toga se točku u ravnini može prikazati vektorom $\textbf{x} = (x, y)^\top$.
+Svaka točka u ravnini u pravokutnom koordinatnom sustavu jednoznačno je određena uređenim parom koordinata $(x, y)$ te je stoga uobičajeno ravninu poistovjetiti s $\mathbb{R}^2$. Zbog toga se točku u ravnini može prikazati vektorom $\mathbf{x} = (x, y)^\top$.
 
 Kao što se točka u ravnini može jednoznačno predstaviti  parom koordinata $(x,~y)$, tako se pravac može prikazati jednadžbom $ax + by + c = 0$, gdje se različiti pravci dobivaju mijenjajući parametre $a$, $b$ i $c$. Zbog tog se svojstva pravci mogu bez promjene mogu prikazati u homogenoj notaciji kao stupac-vektor $(a, b, c)^\top$. Ovaj prikaz, doduše, nije jednoznačan, budući da vektori $(a, b, c)$ i $(ka, kb, kc)$ predstavljaju isti pravac za svaki $k \neq 0$, ali za svaki za svaki pravac zapisan u homogenoj notaciji postoji točno jedan pravac zapisan u euklidskoj notaciji \citep{Hartley2004}.
 
-Da bi se točka $\textbf{x} = (x, y)^\top$ zapisala pomoću homogenih koordinata, potrebno je uzeti u obzir slijedeće:
+Da bi se točka $\mathbf{x} = (x, y)^\top$ zapisala pomoću homogenih koordinata, potrebno je uzeti u obzir slijedeće:
 \begin{enumerate}
-	\item \label{itm:fst} Ako i samo ako točka $\textbf{x} = (x, y)^\top$ leži na pravcu $\textbf{I} =(a, b, c)^\top$, onda vrijedi jednakost $ax + by + c = 0$.
-	\item \eqref{itm:fst}  se može zapisati kao skalani produkt vektora koji prikazuje točku i homogenog prikaza pravca: $(x, y, 1) \cdot (a, b, c) = (x, y, 1) \cdot \textbf{I} = 0$.
-	\item Ako i samo ako vrijedi $(x, y, 1) \cdot \textbf{I} = 0$, onda vrijedi i  $(kx, ky, k) \cdot \textbf{I} = 0$ za bilo koju konstantu $k \neq 0$.
+	\item \label{itm:fst} Ako i samo ako točka $\mathbf{x} = (x, y)^\top$ leži na pravcu $\mathbf{I} =(a, b, c)^\top$, onda vrijedi jednakost $ax + by + c = 0$.
+	\item \eqref{itm:fst}  se može zapisati kao skalani produkt vektora koji prikazuje točku i homogenog prikaza pravca: $(x, y, 1) \cdot (a, b, c) = (x, y, 1) \cdot \mathbf{I} = 0$.
+	\item Ako i samo ako vrijedi $(x, y, 1) \cdot \mathbf{I} = 0$, onda vrijedi i  $(kx, ky, k) \cdot \mathbf{I} = 0$ za bilo koju konstantu $k \neq 0$.
 \end{enumerate}
 
-Iz gorenavedenoga vidi se da će točki $\textbf{x} = (x_1, x_2, x_3)^\top$ iz projekcijske ravnine $\mathbb{P}^2$ odgovarati točka $(\frac{x_1}{x_3}, \frac{x_2}{x_3})^\top$ u euklidskoj ravnini $\mathbb{R}^2$, gdje je $x_3$ homogena koordinata točke $\textbf{x}$.
+Iz gorenavedenoga vidi se da će točki $\mathbf{x} = (x_1, x_2, x_3)^\top$ iz projekcijske ravnine $\mathbb{P}^2$ odgovarati točka $(\frac{x_1}{x_3}, \frac{x_2}{x_3})^\top$ u euklidskoj ravnini $\mathbb{R}^2$, gdje je $x_3$ homogena koordinata točke $\mathbf{x}$.
 
-Važno je još napomenuti da se u slučaju kada je homogena koordinata točke $\textbf{x}$ jednaka $0$ kaže da je ta točka u euklidskoj ravnini u beskonačnosti.
+Važno je još napomenuti da se u slučaju kada je homogena koordinata točke $\mathbf{x}$ jednaka $0$ kaže da je ta točka u euklidskoj ravnini u beskonačnosti.
 
 \section{Projekcijsko preslikavanje}
 
-\section{Izračun transformacijske matrice}
-Izračun transformacijske matrice
+Planarna projekcijska transformacija ili \textit{homografija} je linearna transformacija nad homogenim 3-dimenzionalnim vektorom, a koja se može prikazati nesingularnom $3 \times 3$ matricom \citep{Hartley2004}:
+\begin{equation}
+	\label{eq:transLong}
+	\left[\begin{matrix}
+		x'_1 \\
+		x'_2 \\
+		x'_3
+	\end{matrix}
+	\right] \sim \left[\begin{matrix}
+		h_{11} & h_{12} & h_{13} \\
+		h_{21} & h_{22} & h_{23} \\
+		h_{31} & h_{32} & h_{33}
+	\end{matrix}
+	\right]
+	\cdot
+	\left[
+	\begin{matrix}
+		x_1 \\
+		x_2 \\
+		x_3
+	\end{matrix}
+	\right]
+\end{equation}
+ili kraće
+\begin{equation}
+	\mathbf{x'} \sim H \cdot \mathbf{x}
+	\label{eq:transShort}
+\end{equation}
+
+Važno je još primjetiti da se projekcijska transformacija ne mijenja skaliranjem transformacijske matrice $H$ faktorom različitim od nule, pa se zbog toga matrica $H$ naziva \textit{homogenom matricom} jer je bitan samo omjer elemenata, ali ne i same njihove vrijednosti. Budući da postoji 8 međusobno nezavisnih omjera, kažemo da projekcijska transformacija ima 8 stupnjeva slobode.
 
 \section{Interpolacija}
+
+Interpolacija je matematička metoda kojom se na tememlju poznatog diskretnog skupa funkcijskih vrijednosti konstruiraju nove funkcijske vrijednosti. Diskretni se skup vrijednosti dobiva eksperimentalno ili uzorkovanjem te se interpolacija koristi kao jedna od metoda za rekonstruiranje funkcije. \citep{_interpolation_2013}
+
+% TODO: u ovom radu koristi se ...
+
+\subsection{Linearna interpolacija}
+\label{interpolation:lin}
+
+Linearna interpolacija jedna je od najjednostavnijih metoda interpolacije namjenjen interpolaciji točaka sa samo jednom prostornom dimenzijom, odnosno za procjenu vrijednosti funkcije koja ovisi samo o jednom parametru. 
+
+Pozunajući točke $A (x_1, y_1)$ i $B (x_2, y_2)$, linearni interpolant je dužina koja spaja te dvije točke. Pravac na kojem ta dužina leži izračunava se prema formuli za pravac kroz dvije točke \citep{_linear_2013}
+\begin{equation}
+	y = y_1 + (y_2 - y_1) \frac{x - x_1}{x_2 - x_1}, y_n = f(x_n)
+\end{equation}
+
+Linearna interpolacija nad skupom točaka dobiva se konkatenacijom pojedinih linearnih interpolacija između svakog para točaka, te je tada rezultat linearne interpolacije neprekinuta krivulja čija derivacija ima prekide u poznatim točkama \citep{Bosilj2010} \citep{_linear_2013}.
+
+\subsection{Bilinearna interpolacija}
+
+Bilinearna interpolacija je proširenje linearne interpolacije (\ref{interpolation:lin}), a koristi se za interpolaciju funkcije dvije varijable na pravokutnoj 2D mreži. Provodi se tako da se provede \textbf{linearna} interpolacija prvo u jednom smjeru, a zatim u drugom \citep {_bilinear_2013}. Nije bitno koji je smjer prvi.
+
+Ako su nam poznate vrijednosti funkcije u točkama $Q_{11} (x_1, y_1)$, $Q_{12} (x_1, y_2)$, $Q_{21}  (x_2, y_1)$ i $Q_{22} (x_2, y_2)$, onda bilinearnom interpolacijom možemo naći nepoznatu vrijednost funkcije $f$ u točki $P (x, y)$ koja se nalazi unutar pravokutnika omeđenog točkama $Q_{11}$, $Q_{12}$, $Q_{21}$ i $Q_{22}$.
+
+Na slici \eqref{fig:bilintPrikaz} se može vidjeti grafički prikaz izračuna vrijednosti interpolirane točke.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=6cm]{figures/bilint_visualization.png}
+\caption{Grafički prikaz bilinearne interpolacije}
+\label{fig:bilintPrikaz}
+\end{figure}
+
+Za primjer, pokazat ćemo algoritam kada se linearna interpolacija radi prvo po $x$-osi, a zatim po $y$-osi.
+\begin{equation}
+f(R_1) \approx \frac{x_2 - x}{x_2 - x_1} f(Q_{11}) + \frac{x - x_1}{x_2 - x_1} f(Q_{21})\text{ ,}
+\end{equation}
+gdje je  $R_1 = (x, y_1)$.
+\begin{equation}
+f(R_2) \approx \frac{x_2 - x}{x_2 - x_1} f(Q_{12}) + \frac{x - x_1}{x_2 - x_1} f(Q_{22})\text{ ,}
+\end{equation}
+gdje je  $R_2 = (x, y_2)$.
+
+Zatim nastavljamo provodeći interpolaciju po $y$-smjeru:
+\begin{equation}
+f(P) \approx \frac{y_2 - y}{y_2 - y_1} f(R_1) + \frac{y - y_1}{y_2 - y_1} f(R_2).
+\end{equation}
+
+U ovom se radu bilinearna interpolacija koristi za određivanje boje slikovnog elementa \engl{pixel} u slučaju kada originalne koordinate transformirane točke nisu cjelobrojne, te se zbog toga može koristiti pojednostavljena verzija algoritma u kojoj se pretpostave koordinate točaka $(0,0)$, $(0, 1)$, $(1, 0)$ te $(1, 1)$:
+\begin{equation}
+f(x, y) \approx f(0, 0)(1 - x)(1 -  y) + f(1, 0) x (1 - y) + f(0, 1) (1 - x) y + f(1, 1) x y
+\end{equation}
+
+\section{Određivanje transformacijske matrice}
+
+Ako su nam poznate koordinate četiriju točaka na originalnoj slici $I_o$ te znamo u koje se one točke preslikavaju na transformiranoj slici $I_t$, može se riješiti jednadžba \eqref{eq:transShort} i na taj način dobiti transformacijsku matrica $H$ \citep{segvicDinAn3D}.
+
+S obzirom na to da nam činjenica da se transformacijska matrica $H$ može množiti koeficijentom uvelike komplicira situaciju, kako bi pojednostavili jednadžbu \eqref{eq:transShort} za svaku točku, možemo je zapisati na slijedeći način:
+\begin{equation}
+q_t = \lambda \cdot H \cdot q_o, \lambda \in \mathbb{R}
+\label{eq:transMatSimpler}
+\end{equation}
+gdje je $q_t$ transformirana točka, a $q_o$ originalna.
+
+Nadalje, iz jednadžbe \eqref{eq:transMatSimpler} se može iščitati da su $q_t$ i $H \cdot q_o$ paralelni, što znači da je njihov vektorski produkt jednak $\mathbf{0}$ \citep{vecParallel}:
+\begin{equation}
+\label{eq:crossProd}
+q_t \times (H \cdot q_o) = \vec{0}
+\end{equation}
+Ako transformacijsku matricu $H$ iz \eqref{eq:transLong} i \eqref{eq:transShort} radi jednostavnijeg zapisa zapišemo vektor-stupac u kojem je svaki element vektor-redak:
+\begin{equation}
+H = \left[
+\begin{matrix}
+h_{11} & h_{12} & h_{13} \\
+h_{21} & h_{22} & h_{23} \\
+h_{31} & h_{32} & h_{33}
+\end{matrix}
+\right]
+= \left[
+\begin{matrix}
+\mathbf {h_1} \\
+\mathbf{h_2} \\
+\mathbf{h_3}
+\end{matrix}
+\right]
+\end{equation}
+onda dalje \eqref{eq:crossProd} postaje
+\begin{equation}
+\label{eq:transCrossProdLong}
+\mathbf{q_t} \times \left[
+\begin{matrix}
+\mathbf {h_1} \cdot \mathbf{q_o} \\
+\mathbf{h_2} \cdot \mathbf{q_o} \\
+\mathbf{h_3} \cdot \mathbf{q_o}
+\end{matrix}
+\right]
+= \left[
+\begin{matrix}
+q_{tx} \\
+q_{ty} \\
+q_{tz}
+\end{matrix}
+\right]
+\times \left[
+\begin{matrix}
+\mathbf {h_1} \cdot \mathbf{q_o} \\
+\mathbf{h_2} \cdot \mathbf{q_o} \\
+\mathbf{h_3} \cdot \mathbf{q_o}
+\end{matrix}
+\right]
+= \mathbf{0}
+\end{equation}
+
+Budući da su i transformirana ($q_t$) i originalna ($q_o$) točka zadane u euklidskoj notaciji, njihove su homogene koordinate -- $q_{tz}$ i $q_{oz}$ -- jednake $1$ te \eqref{eq:transCrossProdLong} postaje:
+\begin{equation}
+\label{eq:transCrossProdDetailed}
+\left[
+\begin{matrix}
+q_{tx} \\
+q_{ty} \\
+1
+\end{matrix}
+\right]
+\times \left[
+\begin{matrix}
+\mathbf{h_1} \cdot \mathbf{q_o} \\
+\mathbf{h_2} \cdot \mathbf{q_o} \\
+\mathbf{h_3} \cdot \mathbf{q_o}
+\end{matrix}
+\right]
+= \left[
+\begin{matrix}
+q_{ty} \cdot \mathbf{h_3} \cdot \mathbf{q_o} - \mathbf{h_2} \cdot \mathbf{q_o} \\
+-q_{tx} \cdot \mathbf{h_3} \cdot \mathbf{q_o} + \mathbf{h_1} \cdot \mathbf{q_o} \\
+q_{tx} \cdot \mathbf{h_2} \cdot \mathbf{q_o} + q_{ty} \cdot \mathbf{h_1} \cdot \mathbf{q_o}
+\end{matrix}
+\right]
+= \mathbf{0}
+\end{equation}
+Nakon što izlučimo $h_1$, $h_2$ i $h_3$ dobivamo:
+\begin{equation}
+\left[
+\begin{matrix}
+0 & 0 & 0 & -q_{ox} & -q_{oy} & -1 & q_{ty} q_{ox} & q_{ty} q_{oy} & q_{ty} \\
+q_{ox} & q_{oy} & 1 & 0 & 0 & 0 & -q_{tx} q_{ox} & -q_{tx} q_{oy} & -q_{tx} \\
+-q_{ty} q_{ox} & -q_{ty} q_{oy} & -q_{ty} & q_{tx} q_{ox} & q_{tx} q_{oy} & q_{tx} & 0 & 0 & 0
+\end{matrix}
+\right]
+\cdot
+\left[
+\begin{matrix}
+h_{11} \\
+h_{12} \\
+h_{13} \\
+h_{21} \\
+h_{22} \\
+h_{23} \\
+h_{31} \\
+h_{32} \\
+h_{33}
+\end{matrix}
+\right]
+\end{equation}
+ili kraće
+\begin{equation}
+\left[
+\begin{matrix}
+\mathbf{0}_3^\top & -\mathbf{q_o}^\top & q_{ty} \mathbf{q_o}^\top \\
+\mathbf{q_o}^\top & \mathbf{0}_3^\top & -q_{tx} \mathbf{q_o}^\top \\
+-q_{ty}\mathbf{q_o}^\top & q_{tx} \mathbf{q_o}^\top & \mathbf{0}_3^\top
+\end{matrix}
+\right]
+\cdot
+\left[
+\begin{matrix}
+\mathbf{h_1}^\top \\
+\mathbf{h_2}^\top \\
+\mathbf{h_3}^\top
+\end{matrix}
+\right]
+= \mathbf{0}_3
+\end{equation}
+
+Za svaki par točaka dobivamo po dvije nezavisne jednadžbe, dakle, za četiri para dobivamo linearni sustav oblika:
+\begin{equation}
+\label{eq:transSystemShort}
+A_{8\times9} \cdot \mathbf{h}_{9\times1} = \mathbf{0}_{8\times1}
+\end{equation}
+Uočavamo da sustav iz \eqref{eq:transSystemShort} ima 8 jednadžbi i 9 nepoznanica. Taj je sustav moguće rješiti zahvaljujući njegovom svojstvu homogenosti\footnote{Homogen sutstav je sustav oblika $A\mathbf{x} = \mathbf{0}$} metodom singularne dekompozicije \engl{SVD, singular value decomposition}.
