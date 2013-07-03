@@ -3,7 +3,7 @@
 import sys
 from PIL import Image
 from pylab import *
-import matplotlib
+#import matplotlib
 from numpy import *
 import time
 
@@ -64,7 +64,7 @@ def transformImage ((width, height), originalImage, transformationMatrix, enable
         float(pointOriginal[1][0]/pointOriginal[2][0]),
         1]
 
-      print ("Point transformed: " +str(pointTransformed) + ", Point original: " + str (t) + '\n==============\n')
+      #print ("Point transformed: " +str(pointTransformed) + ", Point original: " + str (t) + '\n==============\n')
       
       xOrig = t[0]
       yOrig = t[1]
@@ -72,8 +72,8 @@ def transformImage ((width, height), originalImage, transformationMatrix, enable
 
       if (enableInterpolation
         and (xOrig != int(xOrig) or yOrig != int(yOrig))
-        and xOrig - 1 >= 0 and xOrig + 1 <= originalWidth
-        and yOrig - 1 >= 0 and yOrig + 1 <= originalHeight):
+        and xOrig + 1 <= originalWidth
+        and yOrig + 1 <= originalHeight):
 
         #print ("Interpolating (%f, %f)" % (xOrig, yOrig))
 
