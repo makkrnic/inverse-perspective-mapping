@@ -1,6 +1,8 @@
 \chapter{Projekcijsko ravninsko preslikavanje}
+\label{ch:preslikavanje}
 
 \section{Prikaz točaka u ravnini homogenom notacijom}
+\label{sec:homNot}
 
 Svaka točka u ravnini u pravokutnom koordinatnom sustavu jednoznačno je određena uređenim parom koordinata $(x, y)$ te je stoga uobičajeno ravninu poistovjetiti s $\mathbb{R}^2$. Zbog toga se točku u ravnini može prikazati vektorom $\mathbf{x} = (x, y)^\top$.
 
@@ -18,6 +20,7 @@ Iz gorenavedenoga vidi se da će točki $\mathbf{x} = (x_1, x_2, x_3)^\top$ iz p
 Važno je još napomenuti da se u slučaju kada je homogena koordinata točke $\mathbf{x}$ jednaka $0$ kaže da je ta točka u euklidskoj ravnini u beskonačnosti.
 
 \section{Projekcijsko preslikavanje}
+\label{sec:projPresl}
 
 Planarna projekcijska transformacija ili \textit{homografija} je linearna transformacija nad homogenim 3-dimenzionalnim vektorom, a koja se može prikazati nesingularnom $3 \times 3$ matricom \citep{Hartley2004}:
 \begin{equation}
@@ -51,12 +54,14 @@ ili kraće
 Važno je još primjetiti da se projekcijska transformacija ne mijenja skaliranjem transformacijske matrice $H$ faktorom različitim od nule, pa se zbog toga matrica $H$ naziva \textit{homogenom matricom} jer je bitan samo omjer elemenata, ali ne i same njihove vrijednosti. Budući da postoji 8 međusobno nezavisnih omjera, kažemo da projekcijska transformacija ima 8 stupnjeva slobode.
 
 \section{Interpolacija}
+\label{sec:interpolacija}
 
 Interpolacija je matematička metoda kojom se na tememlju poznatog diskretnog skupa funkcijskih vrijednosti konstruiraju nove funkcijske vrijednosti. Diskretni se skup vrijednosti dobiva eksperimentalno ili uzorkovanjem te se interpolacija koristi kao jedna od metoda za rekonstruiranje funkcije. \citep{_interpolation_2013}
 
 % TODO: u ovom radu koristi se ...
 
 \subsection{Linearna interpolacija}
+\label{subsec:linInt}
 \label{interpolation:lin}
 
 Linearna interpolacija jedna je od najjednostavnijih metoda interpolacije namjenjen interpolaciji točaka sa samo jednom prostornom dimenzijom, odnosno za procjenu vrijednosti funkcije koja ovisi samo o jednom parametru. 
@@ -69,6 +74,7 @@ Pozunajući točke $A (x_1, y_1)$ i $B (x_2, y_2)$, linearni interpolant je duž
 Linearna interpolacija nad skupom točaka dobiva se konkatenacijom pojedinih linearnih interpolacija između svakog para točaka, te je tada rezultat linearne interpolacije neprekinuta krivulja čija derivacija ima prekide u poznatim točkama \citep{Bosilj2010} \citep{_linear_2013}.
 
 \subsection{Bilinearna interpolacija}
+\label{subsec:bilinInt}
 
 Bilinearna interpolacija je proširenje linearne interpolacije (\ref{interpolation:lin}), a koristi se za interpolaciju funkcije dvije varijable na pravokutnoj 2D mreži. Provodi se tako da se provede \textbf{linearna} interpolacija prvo u jednom smjeru, a zatim u drugom \citep {_bilinear_2013}. Nije bitno koji je smjer prvi.
 
@@ -104,6 +110,7 @@ f(x, y) \approx f(0, 0)(1 - x)(1 -  y) + f(1, 0) x (1 - y) + f(0, 1) (1 - x) y +
 \end{equation}
 
 \section{Određivanje transformacijske matrice}
+\label{sec:odredjivanjeTransMat}
 
 Ako su nam poznate koordinate četiriju točaka na originalnoj slici $I_o$ te znamo u koje se one točke preslikavaju na transformiranoj slici $I_t$, može se riješiti jednadžba \eqref{eq:transShort} i na taj način dobiti transformacijsku matrica $H$ \citep{segvicDinAn3D}.
 
