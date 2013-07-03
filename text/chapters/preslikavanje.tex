@@ -106,6 +106,7 @@ f(P) \approx \frac{y_2 - y}{y_2 - y_1} f(R_1) + \frac{y - y_1}{y_2 - y_1} f(R_2)
 
 U ovom se radu bilinearna interpolacija koristi za određivanje boje slikovnog elementa \engl{pixel} u slučaju kada originalne koordinate transformirane točke nisu cjelobrojne, te se zbog toga može koristiti pojednostavljena verzija algoritma u kojoj se pretpostave koordinate točaka $(0,0)$, $(0, 1)$, $(1, 0)$ te $(1, 1)$:
 \begin{equation}
+\label{eq:interpolationSImple}
 f(x, y) \approx f(0, 0)(1 - x)(1 -  y) + f(1, 0) x (1 - y) + f(0, 1) (1 - x) y + f(1, 1) x y
 \end{equation}
 

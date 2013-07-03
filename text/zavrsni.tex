@@ -1,8 +1,18 @@
 \documentclass[times, utf8, zavrsni, numeric]{fer}
 \usepackage{booktabs}
 \usepackage{listings}
+\usepackage{color}
+\usepackage{xcolor}
 \usepackage{enumitem, hyperref}
 \usepackage{wrapfig}
+\usepackage{float}
+
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}{%
+  \parbox{\textwidth}{\colorbox{gray}{\parbox{\textwidth}{#1#2#3}}\vskip-4pt}}
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
+\lstset{frame=lrb,xleftmargin=\fboxsep,xrightmargin=-\fboxsep,language=[LaTeX]{TeX},columns=flexible}
+\renewcommand{\lstlistingname}{Kod}
 
 
 \begin{document}
@@ -29,8 +39,8 @@
 \input{chapters/uvod.tex}
 \input{chapters/preslikavanje.tex}
 
-\input{chapters/programskaPodrska.tex}
 \input{chapters/implementacija.tex}
+\input{chapters/programskaPodrska.tex}
 \input{chapters/rezultati.tex}
 \input{chapters/zakljucak.tex}
 

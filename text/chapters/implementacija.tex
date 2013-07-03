@@ -1,12 +1,39 @@
 \chapter{Programska implementacija}
 \label{ch:implementacija}
 
+U ovom poglavlju opisani su i pojašnjeni algoritmi i struktura programskog koda koji se koristi za implementaciju projekcijskog ravninskog preslikavanja
+
 \section{Prototip u pythonu}
 \label{sec:pythonProto}
+\lstset{
+	language=Python, 
+	tabsize=2,
+	numbers=left,
+	breaklines=true,
+	basicstyle=\ttfamily,
+	columns=fixed
+}
+
+Kako bi se na što jednostavniji način pristupilo problemu i kako bi se fokus usmjerio prvenstveno na sam algoritam, a tek onda na specifičnosti jezika, za prototipiranje je odabran jezik \textit{Python}.
+
+U nastavku se mogu vidjeti ključni dijelovi koda.
+
+\input{snippets/pythonCalculateMatrix.tex}
+
+Na prikazu koda \ref{code:pythonCalculateMatrix} se nalazi python implementacija metode za računanje transformacijske matrice \lstinline!def calculateHMatrix (originalPoints, transformedPoints):!. \lstinline!originalPoints! je polje s četiri elementa koji su uređeni parovi originalnih točaka (korisnik ih odabire pokazivačem klikom na točke), a \lstinline!transformedPoints! su koordinate odgovarajućih točaka na transformiranoj slici. Ovaj dio koda odgovara odjeljku \ref{sec:odredjivanjeTransMat}, odnosno, matematičkim formulama \eqref{eq:transCrossProdLong} - \eqref{eq:transSystemShort}.
+
+\input{snippets/pythonTransformPoints.tex}
+
+Prikaz koda \ref{code:pythonTransformPoints} prikazuje metodu za transformiranje slike na temelju širine i visine transformirane slike, originalne slike i transformacijske matrice. Transformacijska je matrica $H$ namijenjena za transformaciju originalne točke u transformiranu, odnosno $q_t = H \cdot q_o$, a budući da su nam poznate trenutne koordinate \emph{transformirane} točke, potreban nam je inverz matrice, odnosno $q_o = H^{-1} \cdot q_t$. Zato u liniji \ref{line:imgTransform_invTransMat} invertiramo transformacijsku matricu. Dalje, slijedno prolazimo kroz sve slikovne elemente i primjenjujemo transformaciju na njima. Ukoliko je uključeno interpoliranje, a koordinate trenutno originalne točke nisu cjelobrojne, provjerava se je li trenutna točka rubna desna ili donja, odnosno, zadnji ili predzadnji stupac ili redak te ako nije nad njom se provodi interpoloacija (linija \ref{line:imgTransform_shouldInterpolate}) prema matematičkoj formuli \eqref{eq:interpolationSImple} (linija \ref{line:imgTransform_doInterpolation}).
 
 \section{Implementacija u C++-u}
 \label{sec:implC++}
-\lstset{language=C++, tabsize=2}
+\lstset{
+	language=C++, 
+	tabsize=2,
+	numbers=left
+}
+
 \begin{lstlisting}
 int main () {
 	return 0;

@@ -1,0 +1,23 @@
+\begin{lstlisting}[caption=Metoda u Pythonu za izračunavanje transformacijske matrice, label=code:pythonCalculateMatrix]
+def calculateHMatrix (originalPoints, transformedPoints):  
+  orig = np.array([tuple(i) for i in originalPoints]);
+  
+  transformed = np.array([tuple(i) for i in transformedPoints]);
+
+  A = []
+  for i in range (0,4):
+    A.append([0, 0, 0, -orig[i][0], -orig[i][1], -1, transformed[i][1] * orig[i][0], transformed[i][1] * orig[i][1], transformed[i][1]])
+    A.append([orig[i][0], orig[i][1], 1, 0, 0, 0, -transformed[i][0] * orig[i][0], -transformed[i][0] * orig[i][1], -transformed[i][0]])
+
+  A = np.array(A)
+
+  _, _, vt = linalg.svd(A)
+  h = vt[-1]
+  
+  H = np.matrix([
+    [h[0],h[1],h[2]],
+    [h[3],h[4],h[5]],
+    [h[6],h[7],h[8]]])
+
+  return H
+\end{lstlisting}

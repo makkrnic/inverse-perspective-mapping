@@ -1,0 +1,42 @@
+\begin{lstlisting}[caption=Metoda u Pythonu za izračunavanje pozicije i boje transformiranih točaka,label=code:pythonTransformPoints, escapeinside={@}{@}]
+def transformImage ((width, height), originalImage, transformationMatrix, enableInterpolation = True):
+  @\label{line:imgTransform_invTransMat}@Hinv = linalg.inv(transformationMatrix)
+  transformedImage = array(Image.new (originalImage.mode, (width,height)))
+  (originalWidth, originalHeight) = originalImage.size
+
+  originalArray = array(originalImage)
+  for y in range(0, height):
+    for x in range (0, width):
+      pointTransformed = np.matrix([[x], [y], [1]])
+      pointOriginal = Hinv * pointTransformed
+     
+      t = [float(pointOriginal[0][0]/pointOriginal[2][0]),
+        float(pointOriginal[1][0]/pointOriginal[2][0]),
+        1]
+      
+      xOrig = t[0]
+      yOrig = t[1]
+
+      @\label{line:imgTransform_shouldInterpolate}@if (enableInterpolation
+        and (xOrig != int(xOrig) or yOrig != int(yOrig))
+        and xOrig + 1 <= originalWidth
+        and yOrig + 1 <= originalHeight):
+
+        xOrigInt = int (xOrig)
+        yOrigInt = int (yOrig)
+
+        dx = xOrig - xOrigInt
+        dy = yOrig - yOrigInt
+
+        @\label{line:imgTransform_doInterpolation}@point = (originalArray[yOrigInt][xOrigInt] * (1-dx)*(1-dy)
+              + originalArray[yOrigInt][xOrigInt+1]*dx*(1-dy)
+              + originalArray[yOrigInt+1][xOrigInt]*(1-dx)*dy
+              + originalArray[yOrigInt+1][xOrigInt+1]*dx*dy)
+
+        transformedImage[y][x] = point
+
+      else:
+        transformedImage[y][x] = originalArray[int(yOrig)][int(xOrig)]
+
+  return transformedImage
+\end{lstlisting}
