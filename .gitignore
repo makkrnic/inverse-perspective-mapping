@@ -28,3 +28,5 @@ inverseMapping
 *.fdb_latexmk
 *.fls
 *.bak
+
+.fuse*
