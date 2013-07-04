@@ -1,0 +1,47 @@
+\begin{lstlisting}[caption=Metoda u C++-u za izračunavanje pozicije i boje transformiranih točaka,label=code:cppTransformPoints, escapeinside={@}{@}]
+void transformImage (const Mat& originalImage, Mat& transformedImage, const Mat& transformationMatrix, bool enableInterpolation = true) {
+  
+  Mat transformationMatrixInv = transformationMatrix;
+  CvSize transformedSize = transformedImage.size();
+  CvSize originalSize = originalImage.size();
+
+  for (int y = 0; y <transformedSize.height; y++) {
+    cerr << "Progress: " << (float)((float)y/((float)transformedSize.height - 1) * 100) << " %\n";
+    for (int x = 0; x < transformedSize.width; x++) {
+      Mat pointTransformed (3, 1, transformationMatrixInv.type());
+      pointTransformed.at<float>(0)= x;
+      pointTransformed.at<float>(1)= y;
+      pointTransformed.at<float>(2)= 1;
+      Mat pointOriginal = transformationMatrixInv * (Mat)pointTransformed;
+
+      Point2f originalPoint ( 
+        pointOriginal.at<float>(0)/pointOriginal.at<float>(2),
+        pointOriginal.at<float>(1)/pointOriginal.at<float>(2)
+      );
+      
+      if (enableInterpolation
+          && (originalPoint.x != (int)originalPoint.x || originalPoint.y != (int)originalPoint.y)
+          && originalPoint.x - 1 >= 0 && originalPoint.x < originalSize.width
+          && originalPoint.y - 1 >= 0 && originalPoint.y < originalSize.height
+          ) {
+        
+        int xOrigInt = (int)originalPoint.x;
+        int yOrigInt = (int)originalPoint.y;
+
+        float dx = originalPoint.x - xOrigInt;
+        float dy = originalPoint.y - yOrigInt;
+
+        Vec3b point = originalImage.at<Vec3b>(yOrigInt, xOrigInt) * (1 - dx) * (1 - dy)
+                    + originalImage.at<Vec3b>(yOrigInt, xOrigInt + 1) * dx * (1 - dy)
+                    + originalImage.at<Vec3b>(yOrigInt + 1, xOrigInt) * (1 - dx) * dy
+                    + originalImage.at<Vec3b>(yOrigInt + 1, xOrigInt + 1) * dx * dy;
+
+        transformedImage.at<Vec3b>(y, x) = point;
+      }
+      else {
+        transformedImage.at<Vec3b>(y, x) = originalImage.at<Vec3b>(floor(originalPoint.y), floor(originalPoint.x));
+      }
+    }
+  }
+}
+\end{lstlisting}

@@ -31,11 +31,18 @@ Prikaz koda \ref{code:pythonTransformPoints} prikazuje metodu za transformiranje
 \lstset{
 	language=C++, 
 	tabsize=2,
-	numbers=left
+	numbers=left,
+	breaklines=true,
+	basicstyle=\ttfamily,
+	columns=fixed
 }
 
-\begin{lstlisting}
-int main () {
-	return 0;
-}
-\end{lstlisting}
+Zbog sporog izvođenja programa u Pythonu, o čemu će biti više govora u pogavlju \ref{ch:rezultati}, kao jezik implementacije odabran je C++. U nastavku su prikazani isječci programa u C++-u.
+
+\input{snippets/cppCalculateMatrix.tex}
+
+Prikaz koda \ref{code:cppCalculateMatrix} u C++-u za izračun transformacijske matrice odgovara prikazu koda \ref{code:pythonCalculateMatrix} u Pythonu.
+
+\input{snippets/cppTransformPoints.tex}
+
+Prikaz koda \ref{code:cppTransformPoints} u C++-u za izračun transformacijske matrice odgovara prikazu koda \ref{code:pythonTransformPoints} u Pythonu.
