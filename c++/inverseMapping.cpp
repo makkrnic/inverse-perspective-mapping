@@ -21,25 +21,25 @@ Mat calculateTransformationMatrix (const vector<Point2f>& originalPoints, const 
   //Matx<float, 8, 9> A;
   Mat A (8, 9, CV_32F);
   for (int i = 0; i < 4; i++) {
-    ((Mat)A).at<float>(2*i, 0) = 0;
-    ((Mat)A).at<float>(2*i, 1) = 0;
-    ((Mat)A).at<float>(2*i, 2) = 0;
-    ((Mat)A).at<float>(2*i, 3) = -originalPoints[i].x;
-    ((Mat)A).at<float>(2*i, 4) = -originalPoints[i].y;
-    ((Mat)A).at<float>(2*i, 5) = -1;
-    ((Mat)A).at<float>(2*i, 6) = transformedPoints[i].y * originalPoints[i].x;
-    ((Mat)A).at<float>(2*i, 7) = transformedPoints[i].y * originalPoints[i].y;
-    ((Mat)A).at<float>(2*i, 8) = transformedPoints[i].y;
+    A.at<float>(2*i, 0) = 0;
+    A.at<float>(2*i, 1) = 0;
+    A.at<float>(2*i, 2) = 0;
+    A.at<float>(2*i, 3) = -originalPoints[i].x;
+    A.at<float>(2*i, 4) = -originalPoints[i].y;
+    A.at<float>(2*i, 5) = -1;
+    A.at<float>(2*i, 6) = transformedPoints[i].y * originalPoints[i].x;
+    A.at<float>(2*i, 7) = transformedPoints[i].y * originalPoints[i].y;
+    A.at<float>(2*i, 8) = transformedPoints[i].y;
     
-    ((Mat)A).at<float>(2*i+1, 0) = originalPoints[i].x;
-    ((Mat)A).at<float>(2*i+1, 1) = originalPoints[i].y;
-    ((Mat)A).at<float>(2*i+1, 2) = 1;
-    ((Mat)A).at<float>(2*i+1, 3) = 0;
-    ((Mat)A).at<float>(2*i+1, 4) = 0;
-    ((Mat)A).at<float>(2*i+1, 5) = 0;
-    ((Mat)A).at<float>(2*i+1, 6) = -transformedPoints[i].x * originalPoints[i].x;
-    ((Mat)A).at<float>(2*i+1, 7) = -transformedPoints[i].x * originalPoints[i].y;
-    ((Mat)A).at<float>(2*i+1, 8) = -transformedPoints[i].x;
+    A.at<float>(2*i+1, 0) = originalPoints[i].x;
+    A.at<float>(2*i+1, 1) = originalPoints[i].y;
+    A.at<float>(2*i+1, 2) = 1;
+    A.at<float>(2*i+1, 3) = 0;
+    A.at<float>(2*i+1, 4) = 0;
+    A.at<float>(2*i+1, 5) = 0;
+    A.at<float>(2*i+1, 6) = -transformedPoints[i].x * originalPoints[i].x;
+    A.at<float>(2*i+1, 7) = -transformedPoints[i].x * originalPoints[i].y;
+    A.at<float>(2*i+1, 8) = -transformedPoints[i].x;
   }
 
   cout << "A: " << A << "\n";
@@ -78,10 +78,10 @@ void transformImage (const Mat& originalImage, Mat& transformedImage, const Mat&
       
       if (enableInterpolation
           && (originalPoint.x != (int)originalPoint.x || originalPoint.y != (int)originalPoint.y)
-          && originalPoint.x - 1 >= 0 && originalPoint.x < originalSize.width
-          && originalPoint.y - 1 >= 0 && originalPoint.y < originalSize.height
+          && originalPoint.x < originalSize.width
+          && originalPoint.y < originalSize.height
           ) {
-        
+
         int xOrigInt = (int)originalPoint.x;
         int yOrigInt = (int)originalPoint.y;
 
@@ -128,7 +128,7 @@ int main (int argc, char *argv[]) {
   transformedPoints.push_back(Point2f(outputWidth, 0));
   transformedPoints.push_back(Point2f(outputWidth, outputHeight));
   transformedPoints.push_back(Point2f(0, outputHeight));
-  bool enableInterpolation = argc > 5;
+  bool enableInterpolation = argc < 6;
 
 
 
@@ -171,6 +171,7 @@ int main (int argc, char *argv[]) {
   Mat transformationMatrixCustom = calculateTransformationMatrix (selectedPoints, transformedPoints);
 
   Mat transformedImage (outputHeight, outputWidth, originalImage.type());
+  cerr << "Enable interpolation: " << enableInterpolation << "\n";
   transformImage (originalImage, transformedImage, transformationMatrixCustom, enableInterpolation);
   
   namedWindow ("newimage", CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
@@ -183,7 +184,10 @@ int main (int argc, char *argv[]) {
     cerr << "Error saving image" << "\n";
   }
 
-  while (waitKey(0) != 0x10001B);
+  char c;
+  do {
+    c = waitKey(0);
+  } while (c != 27);
   
   return 0;
 }
