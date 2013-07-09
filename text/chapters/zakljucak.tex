@@ -1,3 +1,6 @@
 \chapter{Zaključak}
 \label{ch:zakljucak}
-Zaključak.
+
+U okviru ovog rada ostvaren je postupak izračuna transformacijske matrice perspektivne transformacije na temelju korisničkog odabira četiriju točaka. Drugi dio rada se bavi perspektivnom transformacijom pomoću matrice dobivene u prvom koraku. Pokazalo se da za obradu slike u stvarnom vremenu (a što je potrebno u slučaju npr. ispravljanja perspektive slike snimane kamerom montiranom na vozilo za vrijeme vožnje) nije dostatan jezik Python već se zadovoljavajući rezultati postižu korištenjem C++-a. Također rezultati su pokazali da se ubrzanje od oko 25-35\% može postići isključivanjem interpolacije. 
+
+Daljnji rad i istraživanje bi se moglo kretati u smjeru olakšavanja korisničkog unosa referentnih točaka, kako je već navedeno u rezultatima. Također, mogle bi se iskoristiti alternativne metode interpolacije za bolje rezultate. Dodatna ubrzanja mogla bi se postići daljnjim optimiziranjem algoritma preslikavanja točaka iz originalne u transformiranu sliku.

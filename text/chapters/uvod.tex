@@ -1,3 +1,10 @@
 \chapter{Uvod}
 \label{ch:uvod}
-Uvod rada. Nakon uvoda dolaze poglavlja u kojima se obrađuje tema.
+
+Projekcijsko ravninsko preslikavanje se u području računalnog vida koristi za mnoge primjene. Neke od primjena su ispravljanje izobličenja nastalih zbog perspektivne slike na kojoj su promijenjeni odnosi linija, zrcaljenje slike, "dodavanje" perspektive na sliku ili rotacija slike.
+
+Cilj ovog rada bio je implementirati algoritam za izračunavanje matrice inverzne perspektivne transformacije ($H$) na temelju korisničkog odabira četiri točke te pomoću te matrice izračunati inverznu perspektivnu transformaciju ulazne slike. Kao ulazna datoteka može se iskoristiti slika u boji (RGB\footnote{Red Green Blue}), bilo kojih dimenzija.
+
+Implementacija je izvedena u jeziku C++ koristeći biblioteku OpenCV nakon što je napravljen prototip u pythonu. Nakon pokretanja od korisnika se traži da odabere četiri točke, te započinje računanje transformacijske matrice i same perspektivne transformacije slike.
+
+Svojstva i algoritam izračuna transformacijske matrice $H$ i perspektivne transformacije opisani su u poglavlju \ref{ch:preslikavanje}, Nakon toga u poglavlju \ref{ch:implementacija} slijedi programska implementacija s odsječcima kôda u Pythonu i C++-u uz pojašnjenja te popis i informacije o korištenoj programskoj podršci i bibliotekama u poglavlju \ref{ch:podrska}. U poglavlju \ref{ch:rezultati} naveden je primjer izvođenja te postignuti rezultati s usporedbom brzine izvođenja programa u C++-u i Pythonu. Naposlijetku je izveden zaključak u poglavlju \ref{ch:zakljucak}, navedena korištena literatura te sažetak najbitnijih točaka.

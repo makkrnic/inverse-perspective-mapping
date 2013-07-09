@@ -52,17 +52,19 @@
 \bibliography{literatura}
 
 \begin{sazetak}
-Sažetak na hrvatskom jeziku.
 
-\kljucnerijeci{Ključne riječi, odvojene zarezima.}
+U ovom radu implementiran je algoritam za izračun matrice inverzne perspektivne transformacije na temelju korisničkog unosa četiri točke. Inverzna perspektivna transformacija je važan postupak područja računalnog vida s raznim primjenama. Za potrebe izračuna matrice proučena je matematička metoda singularne dekompozicije \engl{SVD}, a za samu implementaciju biblioteka \emph{OpenCV} za C++ te biblioteke \emph{Python Imaging Library}, \emph{PyLab} i \emph{NumPy} za Python. Provedena su testiranja i usporedbe vremena izvođenja te je utvrđeno da se implementacija u C++-u izvodi višestruko brže od implementacije u Pythonu te da je implementacija u C++-u pogodna za obradu slike u stvarnom vremenu.
+
+\kljucnerijeci{projekcijsko ravninsko preslikavanje, homografija, projekcijska transformacija, računalni vid, obrada slike, izračun matrice homografije}
 \end{sazetak}
 
 % TODO: Navedite naslov na engleskom jeziku.
-\engtitle{Title}
+\engtitle{Inverse perspective mapping of a planar object}
 \begin{abstract}
-Abstract.
 
-\keywords{Keywords.}
+This work implements the algorithm for the calculation of the inverse perspective transformation matrix based on user-selected four points. Inverse perspective mapping is an important method in the field of computer vision with various applications. For the matrix computation attention was given to the method of singular value decomposition, and for the implementation itself \emph{OpenCV} library for C++ and the libraries \emph{Python Imaging Library (PIL)}, \emph{PyLab} and \emph{NumPy} for Python. The testing was conducted noting execution times and it has been noticed that the C++ implemtation's execution time is many times shorter than that of Python's and that the C++ implementation is suitable for real-time image processing.
+
+\keywords{projective planar mapping, homography, projective transformation, computer vision, image processing, homography matrix calculation}
 \end{abstract}
 
 \end{document}

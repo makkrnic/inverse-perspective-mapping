@@ -168,6 +168,12 @@ int main (int argc, char *argv[]) {
     cout << "(" << p.x << ", " << p.y << ")" << "\n";
   }
 
+  //selectedPoints.push_back (Point2f (162, 55));
+  //selectedPoints.push_back (Point2f (286, 28));
+  //selectedPoints.push_back (Point2f (186, 332));
+  //selectedPoints.push_back (Point2f (23, 342));
+
+
   Mat transformationMatrixCustom = calculateTransformationMatrix (selectedPoints, transformedPoints);
 
   Mat transformedImage (outputHeight, outputWidth, originalImage.type());

@@ -3,26 +3,27 @@
 import sys
 from PIL import Image
 from pylab import *
-#import matplotlib
+import matplotlib
 from numpy import *
 import time
+import datetime
 
 def showPointsSelection(image):
   imshow(image)
-  print ("Please select 4 points")
+  #print ("Please select 4 points")
   points = ginput(4)
-  print (points)
+  #print (points)
 
   return points
 
 def calculateHMatrix (originalPoints, transformedPoints):
-  print ("calculating H matrix")
+  #print ("calculating H matrix")
   
   orig = np.array([tuple(i) for i in originalPoints]);
   
-  print (orig)
+  #print (orig)
   transformed = np.array([tuple(i) for i in transformedPoints]);
-  print (transformed)
+  #print (transformed)
 
   A = []
   for i in range (0,4):
@@ -30,15 +31,15 @@ def calculateHMatrix (originalPoints, transformedPoints):
     A.append([orig[i][0], orig[i][1], 1, 0, 0, 0, -transformed[i][0] * orig[i][0], -transformed[i][0] * orig[i][1], -transformed[i][0]])
 
   A = np.array(A)
-  print ("A: ")
-  print (A)
+  #print ("A: ")
+  #print (A)
 
-  u, d, vt = linalg.svd(A)
-  print ("u:"); print (u);
-  print ("d: "); print (d);
-  print ("vt: "); print (vt);
+  _, _, vt = linalg.svd(A)
+  #print ("u:"); print (u);
+  #print ("d: "); print (d);
+  #print ("vt: "); print (vt);
   h = vt[-1]
-  print ("H as vector: ", str(h))
+  #print ("H as vector: ", str(h))
   
   H = np.matrix([
     [h[0],h[1],h[2]],
@@ -55,7 +56,7 @@ def transformImage ((width, height), originalImage, transformationMatrix, enable
 
   originalArray = array(originalImage)
   for y in range(0, height):
-    print ("Progress %.2lf %%" % (float(y)/float(height-1) * 100))
+    #print ("Progress %.2lf %%" % (float(y)/float(height-1) * 100))
     for x in range (0, width):
       pointTransformed = np.matrix([[x], [y], [1]])
       pointOriginal = Hinv * pointTransformed
@@ -124,13 +125,14 @@ if __name__ == '__main__':
 
   transformedPoints = [(0,0), (transformedWidth,0), (transformedWidth,transformedHeight), (0,transformedHeight)]
   originalImage = Image.open(inputFile)
-  originalPoints = showPointsSelection(array(originalImage))
+  #originalPoints = showPointsSelection(array(originalImage))
   
+  originalPoints = [(162, 55), (286, 28), (186, 332), (23, 342)]
   #originalPoints = [(0,0), (transformedWidth,0), (transformedWidth,transformedHeight), (0,transformedHeight)]
 
-  timeStartMatrixCalculation = time.clock()
+  timeStartMatrixCalculation = datetime.datetime.now()
   hMatrix = calculateHMatrix (originalPoints, transformedPoints)
-  timeEndMatrixCalculation = time.clock()
+  timeEndMatrixCalculation = datetime.datetime.now()
   
   timeStartTransformation = time.clock()
   transformedImage = transformImage ((transformedWidth, transformedHeight), originalImage, hMatrix, enableInterpolation)
@@ -142,6 +144,7 @@ if __name__ == '__main__':
   #imshow (transformedImage)
   #ginput (3)
   
-  print ("CPU time for transformation matrix calculation: %f" % (timeEndMatrixCalculation - timeStartMatrixCalculation))
-  print ("CPU time for transformation: %f." % (timeEndTransformation - timeStartTransformation))
-  print ("Total CPU time: %f.\n" % (timeEnd - timeStart))
+  print ("CPU time for transformation matrix calculation: %f usec" % ((timeEndMatrixCalculation - timeStartMatrixCalculation).microseconds))
+  #print (timeEndMatrixCalculation - timeStartMatrixCalculation)
+  print ("CPU time for transformation: %f ms." % ((timeEndTransformation - timeStartTransformation)*1000))
+  print ("Total CPU time: %f ms.\n" % ((timeEnd - timeStart) *1000))

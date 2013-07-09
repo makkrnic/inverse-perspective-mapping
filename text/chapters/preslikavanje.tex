@@ -6,23 +6,25 @@
 
 Svaka točka u ravnini u pravokutnom koordinatnom sustavu jednoznačno je određena uređenim parom koordinata $(x, y)$ te je stoga uobičajeno ravninu poistovjetiti s $\mathbb{R}^2$. Zbog toga se točku u ravnini može prikazati vektorom $\mathbf{x} = (x, y)^\top$.
 
-Kao što se točka u ravnini može jednoznačno predstaviti  parom koordinata $(x,~y)$, tako se pravac može prikazati jednadžbom $ax + by + c = 0$, gdje se različiti pravci dobivaju mijenjajući parametre $a$, $b$ i $c$. Zbog tog se svojstva pravci mogu bez promjene mogu prikazati u homogenoj notaciji kao stupac-vektor $(a, b, c)^\top$. Ovaj prikaz, doduše, nije jednoznačan, budući da vektori $(a, b, c)$ i $(ka, kb, kc)$ predstavljaju isti pravac za svaki $k \neq 0$, ali za svaki za svaki pravac zapisan u homogenoj notaciji postoji točno jedan pravac zapisan u euklidskoj notaciji \citep{Hartley2004}.
+Kao što se točka u ravnini može jednoznačno predstaviti  parom koordinata $(x,~y)$, tako se pravac može prikazati jednadžbom $ax + by + c = 0$, gdje se različiti pravci dobivaju mijenjajući parametre $a$, $b$ i $c$. Zbog tog se svojstva pravci mogu bez promjene mogu prikazati u homogenoj notaciji kao stupčani vektor $(a, b, c)^\top$. Ovaj prikaz, doduše, nije jednoznačan, budući da vektori $(a, b, c)$ i $(ka, kb, kc)$ predstavljaju isti pravac za svaki $k \neq 0$, ali za svaki pravac zapisan u homogenoj notaciji postoji točno jedan pravac zapisan u ortogonalnoj notaciji \citep{Hartley2004}.
 
 Da bi se točka $\mathbf{x} = (x, y)^\top$ zapisala pomoću homogenih koordinata, potrebno je uzeti u obzir slijedeće:
 \begin{enumerate}
 	\item \label{itm:fst} Ako i samo ako točka $\mathbf{x} = (x, y)^\top$ leži na pravcu $\mathbf{I} =(a, b, c)^\top$, onda vrijedi jednakost $ax + by + c = 0$.
-	\item \eqref{itm:fst}  se može zapisati kao skalani produkt vektora koji prikazuje točku i homogenog prikaza pravca: $(x, y, 1) \cdot (a, b, c) = (x, y, 1) \cdot \mathbf{I} = 0$.
+	\item Tvrdnja iz točke \ref{itm:fst} se može zapisati kao skalarni produkt vektora koji prikazuje točku i homogenog prikaza pravca: $(x, y, 1) \cdot (a, b, c) = (x, y, 1) \cdot \mathbf{I} = 0$.
 	\item Ako i samo ako vrijedi $(x, y, 1) \cdot \mathbf{I} = 0$, onda vrijedi i  $(kx, ky, k) \cdot \mathbf{I} = 0$ za bilo koju konstantu $k \neq 0$.
 \end{enumerate}
 
 Iz gorenavedenoga vidi se da će točki $\mathbf{x} = (x_1, x_2, x_3)^\top$ iz projekcijske ravnine $\mathbb{P}^2$ odgovarati točka $(\frac{x_1}{x_3}, \frac{x_2}{x_3})^\top$ u euklidskoj ravnini $\mathbb{R}^2$, gdje je $x_3$ homogena koordinata točke $\mathbf{x}$.
 
-Važno je još napomenuti da se u slučaju kada je homogena koordinata točke $\mathbf{x}$ jednaka $0$ kaže da je ta točka u euklidskoj ravnini u beskonačnosti.
+Bitno je također napomenuti da se u slučaju kada je homogena koordinata točke $\mathbf{x}$ jednaka $0$ kaže da je ta točka u euklidskoj ravnini u beskonačnosti.
+
+Projekcijski prostor $\mathbb{P}^2$ opisuje se kao skup zraka u prostoru $\mathbb{R}^3$. Ako se kroz ishodište prostora $\mathbb{R}^3$ provuče pravac, točke koje se nalaze na tom pravcu mogu se predstaviti vektorima $k(x_1, x_2, x_3)$ koji se u projekcijskom prostoru $\mathbb{P}^2$ preslikavaju u istu točku.
 
 \section{Projekcijsko preslikavanje}
 \label{sec:projPresl}
 
-Planarna projekcijska transformacija ili \textit{homografija} je linearna transformacija nad homogenim 3-dimenzionalnim vektorom, a koja se može prikazati nesingularnom $3 \times 3$ matricom \citep{Hartley2004}:
+Planarna projekcijska transformacija ili \textit{homografija} je linearna transformacija nad homogenim 3-dimenzionalnim vektorom koji predstavlja homogeni zapis točke ravnine, a koja se može prikazati nesingularnom $3 \times 3$ matricom \citep{Hartley2004}:
 \begin{equation}
 	\label{eq:transLong}
 	\left[\begin{matrix}
@@ -76,11 +78,11 @@ Linearna interpolacija nad skupom točaka dobiva se konkatenacijom pojedinih lin
 \subsection{Bilinearna interpolacija}
 \label{subsec:bilinInt}
 
-Bilinearna interpolacija je proširenje linearne interpolacije (\ref{interpolation:lin}), a koristi se za interpolaciju funkcije dvije varijable na pravokutnoj 2D mreži. Provodi se tako da se provede \textbf{linearna} interpolacija prvo u jednom smjeru, a zatim u drugom \citep {_bilinear_2013}. Nije bitno koji je smjer prvi.
+Bilinearna interpolacija je proširenje linearne interpolacije \ref{interpolation:lin}, a koristi se za interpolaciju funkcije dvije varijable na pravokutnoj 2D mreži. Provodi se tako da se provede \textbf{linearna} interpolacija prvo u jednom smjeru, a zatim u drugom \citep {_bilinear_2013}. Nije bitno koji je smjer prvi.
 
 Ako su nam poznate vrijednosti funkcije u točkama $Q_{11} (x_1, y_1)$, $Q_{12} (x_1, y_2)$, $Q_{21}  (x_2, y_1)$ i $Q_{22} (x_2, y_2)$, onda bilinearnom interpolacijom možemo naći nepoznatu vrijednost funkcije $f$ u točki $P (x, y)$ koja se nalazi unutar pravokutnika omeđenog točkama $Q_{11}$, $Q_{12}$, $Q_{21}$ i $Q_{22}$.
 
-Na slici \eqref{fig:bilintPrikaz} se može vidjeti grafički prikaz izračuna vrijednosti interpolirane točke.
+Na slici \ref{fig:bilintPrikaz} se može vidjeti grafički prikaz izračuna vrijednosti interpolirane točke.
 
 \begin{figure}[ht]
 \centering
@@ -113,7 +115,7 @@ f(x, y) \approx f(0, 0)(1 - x)(1 -  y) + f(1, 0) x (1 - y) + f(0, 1) (1 - x) y +
 \section{Određivanje transformacijske matrice}
 \label{sec:odredjivanjeTransMat}
 
-Ako su nam poznate koordinate četiriju točaka na originalnoj slici $I_o$ te znamo u koje se one točke preslikavaju na transformiranoj slici $I_t$, može se riješiti jednadžba \eqref{eq:transShort} i na taj način dobiti transformacijsku matrica $H$ \citep{segvicDinAn3D}.
+Ako su nam poznate koordinate četiriju točaka na originalnoj slici $I_o$ te znamo u koje se one točke preslikavaju na transformiranoj slici $I_t$, može se riješiti jednadžba \eqref{eq:transShort} i na taj način dobiti transformacijsku matricu $H$ \citep{segvicDinAn3D}.
 
 S obzirom na to da nam činjenica da se transformacijska matrica $H$ može množiti koeficijentom uvelike komplicira situaciju, kako bi pojednostavili jednadžbu \eqref{eq:transShort} za svaku točku, možemo je zapisati na slijedeći način:
 \begin{equation}
@@ -127,7 +129,7 @@ Nadalje, iz jednadžbe \eqref{eq:transMatSimpler} se može iščitati da su $q_t
 \label{eq:crossProd}
 q_t \times (H \cdot q_o) = \vec{0}
 \end{equation}
-Ako transformacijsku matricu $H$ iz \eqref{eq:transLong} i \eqref{eq:transShort} radi jednostavnijeg zapisa zapišemo vektor-stupac u kojem je svaki element vektor-redak:
+Radi jednostavnijeg zapisa jednadžbi \eqref{eq:transLong} i \eqref{eq:transShort} možemo reći da retke matrice $H$ prikazujemo retčanim vektorima $h_i$.:
 \begin{equation}
 H = \left[
 \begin{matrix}
@@ -144,7 +146,7 @@ h_{31} & h_{32} & h_{33}
 \end{matrix}
 \right]
 \end{equation}
-onda dalje \eqref{eq:crossProd} postaje
+Tada dalje \eqref{eq:crossProd} postaje
 \begin{equation}
 \label{eq:transCrossProdLong}
 \mathbf{q_t} \times \left[
@@ -171,7 +173,7 @@ q_{tz}
 = \mathbf{0}
 \end{equation}
 
-Budući da su i transformirana ($q_t$) i originalna ($q_o$) točka zadane u euklidskoj notaciji, njihove su homogene koordinate -- $q_{tz}$ i $q_{oz}$ -- jednake $1$ te \eqref{eq:transCrossProdLong} postaje:
+Budući da su i transformirana ($q_t$) i originalna ($q_o$) točka zadane u ortogonalnoj notaciji, njihove su homogene koordinate $q_{tz}$ i $q_{oz}$ jednake $1$ te \eqref{eq:transCrossProdLong} postaje:
 \begin{equation}
 \label{eq:transCrossProdDetailed}
 \left[
@@ -197,7 +199,7 @@ q_{tx} \cdot \mathbf{h_2} \cdot \mathbf{q_o} + q_{ty} \cdot \mathbf{h_1} \cdot \
 \right]
 = \mathbf{0}
 \end{equation}
-Nakon što izlučimo $h_1$, $h_2$ i $h_3$ dobivamo:
+Nakon što izlučimo $\mathbf{h_1}$, $\mathbf{h_2}$ i $\mathbf{h_3}$ dobivamo:
 \begin{equation}
 \left[
 \begin{matrix}
