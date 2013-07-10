@@ -61,9 +61,10 @@ void transformImage (const Mat& originalImage, Mat& transformedImage, const Mat&
   Mat transformationMatrixInv = transformationMatrix;
   CvSize transformedSize = transformedImage.size();
   CvSize originalSize = originalImage.size();
+  Vec3b blankPoint (0, 0, 0);
 
   for (int y = 0; y <transformedSize.height; y++) {
-    cerr << "Progress: " << (float)((float)y/((float)transformedSize.height - 1) * 100) << " %\n";
+    //cerr << "Progress: " << (float)((float)y/((float)transformedSize.height - 1) * 100) << " %\n";
     for (int x = 0; x < transformedSize.width; x++) {
       Mat pointTransformed (3, 1, transformationMatrixInv.type());
       pointTransformed.at<float>(0)= x;
@@ -76,7 +77,12 @@ void transformImage (const Mat& originalImage, Mat& transformedImage, const Mat&
         pointOriginal.at<float>(1)/pointOriginal.at<float>(2)
       );
       
-      if (enableInterpolation
+      if (originalPoint.x < 0 || originalPoint.x > originalSize.width
+        ||originalPoint.y < 0 || originalPoint.y > originalSize.height) {
+        
+        transformedImage.at<Vec3b>(y, x) = blankPoint;
+      }
+      else if (enableInterpolation
           && (originalPoint.x != (int)originalPoint.x || originalPoint.y != (int)originalPoint.y)
           && originalPoint.x < originalSize.width
           && originalPoint.y < originalSize.height
@@ -108,19 +114,22 @@ void transformImage (const Mat& originalImage, Mat& transformedImage, const Mat&
 
 int main (int argc, char *argv[]) {
   const char *usage = " <input_file> <output_file> <output_width> <output_height>";
-  char *inputImageName;
+  string inputImageName;
   
   if (argc < 5) {
     cerr << "Usage: "<< argv[0] << usage << "\n";
     return -1;
   }
 
-  inputImageName = argv[1];
+  //inputImageName = argv[1];
+  inputImageName = "samples/road.avi";
 
   int outputWidth   = atoi (argv[3]);
   int outputHeight  = atoi (argv[4]);
-  Mat originalImage = imread (inputImageName, CV_LOAD_IMAGE_COLOR);
-  char *outputImageName = argv[2];
+  //Mat originalImage = imread (inputImageName, CV_LOAD_IMAGE_COLOR);
+  Mat originalImage;
+  char *outputFileName = argv[2];
+  Mat *transformedImage;
   //Mat *transformedImage = new Mat (outputHeight, outputWidth, originalImage.type());
 
   vector<Point2f> transformedPoints;
@@ -131,21 +140,33 @@ int main (int argc, char *argv[]) {
   bool enableInterpolation = argc < 6;
 
 
+  // video capture
 
-  if (!originalImage.data) {
-    cerr << "Could not open image: " << inputImageName << "\n";
+  VideoCapture cap(inputImageName);
+  if (!cap.isOpened()) {
+    cerr << "error opening default camera\n";
     return -1;
   }
 
+  Mat edges;
+  namedWindow ("edges", CV_WINDOW_KEEPRATIO|CV_WINDOW_NORMAL);
+  namedWindow ("transformed", CV_WINDOW_KEEPRATIO|CV_WINDOW_NORMAL);
+  Mat frame;
+  cap >> frame;
+  //Canny(edges, edges, 0, 30, 3);
+  imshow("edges",frame);
+  imshow("transformed",frame);
+  originalImage = frame;
+
   // First, we need to display the image to the user
-  namedWindow ("Points selection", CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
+  namedWindow ("edges", CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
   // Next, we have to pick up selected points
   CvPoint selectedPoint;
-  cvSetMouseCallback ("Points selection", mouseHandler, &selectedPoint);
-
+  cvSetMouseCallback ("edges", mouseHandler, &selectedPoint);
+  
   Mat originalImageCopy = originalImage.clone();
-  imshow ("Points selection", originalImageCopy);
-
+  imshow ("edges", originalImageCopy);
+  
   vector<Point2f> selectedPoints;// = new vector();
   int pointsClicked;
   CvScalar pointColor = cvScalar (0, 0, 255);
@@ -154,12 +175,12 @@ int main (int argc, char *argv[]) {
     while (selectedPoint.x == -1) {
       waitKey(10);
     }
-
+  
     circle (originalImageCopy, selectedPoint, 5, pointColor, CV_FILLED);
-    imshow ("Points selection", originalImageCopy);
+    imshow ("edges", originalImageCopy);
     
     selectedPoints.push_back (selectedPoint);
-
+  
   }
   
   cout << "Points: " << "\n";
@@ -168,32 +189,34 @@ int main (int argc, char *argv[]) {
     cout << "(" << p.x << ", " << p.y << ")" << "\n";
   }
 
-  //selectedPoints.push_back (Point2f (162, 55));
-  //selectedPoints.push_back (Point2f (286, 28));
-  //selectedPoints.push_back (Point2f (186, 332));
-  //selectedPoints.push_back (Point2f (23, 342));
-
 
   Mat transformationMatrixCustom = calculateTransformationMatrix (selectedPoints, transformedPoints);
 
-  Mat transformedImage (outputHeight, outputWidth, originalImage.type());
-  cerr << "Enable interpolation: " << enableInterpolation << "\n";
-  transformImage (originalImage, transformedImage, transformationMatrixCustom, enableInterpolation);
-  
-  namedWindow ("newimage", CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
-  imshow ("newimage", transformedImage);
+  transformedImage = new Mat (outputHeight, outputWidth, originalImage.type());
 
-  try {
-    imwrite (outputImageName, transformedImage);
+  //string outputFileName = "out.mpg";
+
+  VideoWriter vw (outputFileName, CV_FOURCC('M','J','P','G'), 25, frame.size(), true);
+  if (!vw.isOpened()) {
+    cerr << "error opening file for writing\n";
+    return -3;
+
   }
-  catch (Exception e) {
-    cerr << "Error saving image" << "\n";
+  //vw->open
+  while (true) {
+    //Mat frame;
+    cap >> frame;
+    //Canny(edges, edges, 0, 30, 3);
+    Mat transformedImage (outputHeight, outputWidth, frame.type());
+
+    transformImage (frame, transformedImage, transformationMatrixCustom, enableInterpolation);
+
+    imshow("transformed",transformedImage);
+    imshow ("edges", frame);
+    resizeWindow ("transformed", 500, 500);
+    vw.write(frame);
+    if (waitKey(30) == 27) break;
   }
 
-  char c;
-  do {
-    c = waitKey(0);
-  } while (c != 27);
-  
   return 0;
 }
