@@ -20,7 +20,7 @@ U nastavku se mogu vidjeti ključni dijelovi koda.
 
 \input{snippets/pythonCalculateMatrix.tex}
 
-Odsječak kôda \ref{code:pythonCalculateMatrix} prikazuje python implementaciju metode za računanje transformacijske matrice \lstinline!def calculateHMatrix (originalPoints, transformedPoints):!. \lstinline!originalPoints! je polje s četiri elementa koji su uređeni parovi originalnih točaka (korisnik ih odabire pokazivačem klikom na točke), a \lstinline!transformedPoints! su koordinate odgovarajućih točaka na transformiranoj slici. Ovaj dio koda odgovara odjeljku \ref{sec:odredjivanjeTransMat}, odnosno, matematičkim formulama \eqref{eq:transCrossProdLong} - \eqref{eq:transSystemShort}.
+Odsječak kôda \ref{code:pythonCalculateMatrix} prikazuje implementaciju funkcije \lstinline!calculateHMatrix! koja određuje homografiju $H$ iz 4 para korespondentnih točaka ravnine. \lstinline!originalPoints! je polje s četiri elementa koji su uređeni parovi originalnih točaka (korisnik ih odabire pokazivačem klikom na točke), a \lstinline!transformedPoints! su koordinate odgovarajućih točaka na transformiranoj slici. Ovaj dio koda odgovara odjeljku \ref{sec:odredjivanjeTransMat}, odnosno, matematičkim formulama \eqref{eq:transCrossProdLong} - \eqref{eq:transSystemShort}.
 
 \input{snippets/pythonTransformPoints.tex}
 

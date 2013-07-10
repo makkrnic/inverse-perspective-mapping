@@ -60,7 +60,7 @@ Važno je još primjetiti da se projekcijska transformacija ne mijenja skaliranj
 
 Interpolacija je matematička metoda kojom se na tememlju poznatog diskretnog skupa funkcijskih vrijednosti konstruiraju nove funkcijske vrijednosti. Diskretni se skup vrijednosti dobiva eksperimentalno ili uzorkovanjem te se interpolacija koristi kao jedna od metoda za rekonstruiranje funkcije. \citep{_interpolation_2013}
 
-% TODO: u ovom radu koristi se ...
+Osim linearne i bilinearne interpolacije za interpolaciju slikovnih elemenata postoje i druge metode interpolacije kao što su polinomna, \emph{spline}, interpolacija Gaussovim procesom, interpolacija racionalnim funkcijama i trigonometrijska. Navedene interpolacije pružaju određene prednosti nad linearnom i bilinearnom, ali presložene da bi se mogle izvršavati dovoljno brzo te je zato za ovaj rad odabrana bilinearna interpolacija.
 
 \subsection{Linearna interpolacija}
 \label{subsec:linInt}
@@ -106,11 +106,29 @@ Zatim nastavljamo provodeći interpolaciju po $y$-smjeru:
 f(P) \approx \frac{y_2 - y}{y_2 - y_1} f(R_1) + \frac{y - y_1}{y_2 - y_1} f(R_2).
 \end{equation}
 
+Potrebno je skrenuti pozornost na to da se u degeneriranom slučaju bilinearne transfomacije kada se provodi nad jednodimenzionalnom slikom spada na linearnu interpolaciju koja se provodi samo u smjeru u kojem se proteže ta jedna dimenzija.
+
+Iako se ova metoda interpolacije naziva \emph{bilinearna} i svaki korak jest linearan, to je ustvari umnožak dvije linearne funkcije, odnosno to je kvadratna funkcija oblika:
+\begin{equation}
+	(a_1x + a_2)(a_3y + a_4) \text{.}
+\end{equation}
+
 U ovom se radu bilinearna interpolacija koristi za određivanje boje slikovnog elementa \engl{pixel} u slučaju kada originalne koordinate transformirane točke nisu cjelobrojne, te se zbog toga može koristiti pojednostavljena verzija algoritma u kojoj se pretpostave koordinate točaka $(0,0)$, $(0, 1)$, $(1, 0)$ te $(1, 1)$:
 \begin{equation}
 \label{eq:interpolationSImple}
 f(x, y) \approx f(0, 0)(1 - x)(1 -  y) + f(1, 0) x (1 - y) + f(0, 1) (1 - x) y + f(1, 1) x y
 \end{equation}
+
+\section{Singularna dekompozicija}
+\label{sec:svd}
+
+Singularna dekompozicija matrice je tehnika koja veoma bitna za rješavanje problema u području računalnog vida. Među ostalime, koristi se, kao u ovom radu, za izračunavanje skupa homogenih linearnih jednadžbi $A\mathbf{x}=\mathbf{0}$.
+
+Svaka se realna matrica $A_{m \times n}$ može zapisati kao produkt triju matrica:
+\begin{equation}
+	A = U D V^\top
+\end{equation}
+gdje su $U_{m \times m}$ i $V_{n \times n}$ matrice čiji su stupci međusobno okomiti jedinični vektori, a $D_{m \times n}$ je dijagonalna matrica čiji se elementi dijagonale $\sigma_i$ nazivaju singularne vrijednosti i vrijedi $\sigma_1 \geq \sigma_2 \geq \ldots \sigma_n \geq 0$.
 
 \section{Određivanje transformacijske matrice}
 \label{sec:odredjivanjeTransMat}
