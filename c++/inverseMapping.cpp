@@ -121,8 +121,8 @@ int main (int argc, char *argv[]) {
     return -1;
   }
 
-  //inputImageName = argv[1];
-  inputImageName = "samples/road.avi";
+  inputImageName = argv[1];
+  //inputImageName = "samples/road.avi";
 
   int outputWidth   = atoi (argv[3]);
   int outputHeight  = atoi (argv[4]);
